@@ -4,7 +4,7 @@ import { sinonTest } from '../testUtils';
 import { BatchDeleteRequest } from '../../src/request/batchDeleteRequest';
 import { documentClient } from '../testUtils';
 import { fakeTable, FakeAModel, FakeBModel } from './utils';
-import { DBClient } from '../../src';
+import * as DynamoModel from '../../src';
 
 describe('#batchDeleteRequest', function () {
     describe('#constructor', function () {
@@ -25,7 +25,7 @@ describe('#batchDeleteRequest', function () {
             expect(BatchDeleteRequest.prototype.execute).to.be.a('function');
         });
         it('should test params conversion', sinonTest(async function () {
-            const params: DBClient.BatchDeleteInput = {
+            const params: DynamoModel.BatchDeleteInput = {
                 table: fakeTable,
                 keys: [
                     {

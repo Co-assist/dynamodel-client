@@ -1,6 +1,6 @@
 import { PromiseResult } from 'aws-sdk/lib/request';
 import { expect } from 'chai';
-import { DBClient } from '../../src';
+import { DynamoModel } from '../../src';
 import { mergeItemCollectionMetrics, mergeBatchDeleteUnprocessedKeys, mergeBatchGetUnprocessedKeys, mergeBatchPutUnprocessedItems } from '../../src/util/dynamoOutputUtils';
 
 describe('#dynamoOutputUtils', function () {
@@ -67,7 +67,7 @@ describe('#dynamoOutputUtils', function () {
                 fakeResponse(),
                 fakeResponse()
             ];
-            const expected: DBClient.AttributeMap[] = [
+            const expected: DynamoModel.AttributeMap[] = [
                 {
                     type: 'test'
                 },
@@ -103,7 +103,7 @@ describe('#dynamoOutputUtils', function () {
                 fakeResponse(),
                 fakeResponse()
             ];
-            const expected: DBClient.AttributeMap[] = [
+            const expected: DynamoModel.AttributeMap[] = [
                 {
                     type: 'test'
                 },
@@ -141,7 +141,7 @@ describe('#dynamoOutputUtils', function () {
                 fakeResponse(),
                 fakeResponse()
             ];
-            const expected: DBClient.AttributeMap[] = [
+            const expected: DynamoModel.AttributeMap[] = [
                 {
                     type: 'test'
                 },

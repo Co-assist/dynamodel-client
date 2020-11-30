@@ -6,7 +6,7 @@ import { documentClient } from '../testUtils';
 import { fakeTable, FakeAModel, FakeBModel } from './utils';
 import { path, value, sortKey } from '../../src/expression/expression';
 import { attributeType, equals } from '../../src/expression/conditionExpression';
-import { DBClient } from '../../src';
+import { DynamoModel } from '../../src';
 
 describe('#queryRequest', function () {
     describe('#constructor', function () {
@@ -26,7 +26,7 @@ describe('#queryRequest', function () {
             expect(QueryRequest.prototype.execute).to.be.a('function');
         });
         it('should test params conversion 1', sinonTest(async function () {
-            const params: DBClient.QueryInput = {
+            const params: DynamoModel.QueryInput = {
                 consistentRead: true,
                 countLimit: 10,
                 exclusiveStartKey: {
@@ -77,7 +77,7 @@ describe('#queryRequest', function () {
             expect(awsParams).deep.equals(expectedAwsParams);
         }));
         it('should test params conversion 2', sinonTest(async function () {
-            const params: DBClient.QueryInput = {
+            const params: DynamoModel.QueryInput = {
                 consistentRead: true,
                 countLimit: 10,
                 exclusiveStartKey: {

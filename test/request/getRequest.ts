@@ -5,7 +5,7 @@ import { GetRequest } from '../../src/request/getRequest';
 import { documentClient } from '../testUtils';
 import { fakeTable, FakeAModel, FakeBModel } from './utils';
 import { path } from '../../src/expression/expression';
-import { DBClient } from '../../src';
+import { DynamoModel } from '../../src';
 
 describe('#getRequest', function () {
     describe('#constructor', function () {
@@ -26,7 +26,7 @@ describe('#getRequest', function () {
             expect(GetRequest.prototype.execute).to.be.a('function');
         });
         it('should test params conversion', sinonTest(async function () {
-            const params: DBClient.GetInput = {
+            const params: DynamoModel.GetInput = {
                 key: {
                     id: 1,
                     type: 'a'

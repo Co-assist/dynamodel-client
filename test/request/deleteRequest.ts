@@ -6,7 +6,7 @@ import { documentClient } from '../testUtils';
 import { fakeTable, FakeAModel, FakeBModel } from './utils';
 import { equals } from '../../src/expression/conditionExpression';
 import { sortKey, value } from '../../src/expression/expression';
-import { DBClient } from '../../src';
+import { DynamoModel } from '../../src';
 
 describe('#deleteRequest', function () {
     describe('#constructor', function () {
@@ -27,7 +27,7 @@ describe('#deleteRequest', function () {
             expect(DeleteRequest.prototype.execute).to.be.a('function');
         });
         it('should test params conversion', sinonTest(async function () {
-            const params: DBClient.DeleteInput = {
+            const params: DynamoModel.DeleteInput = {
                 condition: equals(sortKey(), value('a')),
                 key: {
                     id: 1,

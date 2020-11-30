@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { DBClient } from '../src/dbClient';
+import { DynamoModel } from '../src/dbClient';
 import { model } from '../src/model';
 import { documentClient, sinonTest } from './testUtils';
 import { BatchDeleteRequest } from '../src/request/batchDeleteRequest';
@@ -28,11 +28,11 @@ const fakeTable = new Table({
 describe('#dbClient', function () {
     describe('#constructor', function () {
         it('should exist', function () {
-            expect(DBClient).to.be.a('function');
+            expect(DynamoModel).to.be.a('function');
         });
         it('should be instanciable', function () {
-            const dbClient = new DBClient(documentClient, 'test');
-            expect(dbClient).to.be.instanceOf(DBClient);
+            const dbClient = new DynamoModel(documentClient, 'test');
+            expect(dbClient).to.be.instanceOf(DynamoModel);
             // @ts-expect-error
             expect(dbClient.documentClient).to.equals(documentClient);
             // @ts-expect-error
@@ -41,10 +41,10 @@ describe('#dbClient', function () {
     });
     describe('#batchDelete', function () {
         it('should exist', function () {
-            expect(DBClient.prototype.batchDelete).to.be.a('function');
+            expect(DynamoModel.prototype.batchDelete).to.be.a('function');
         });
         it('should execute the request', sinonTest(async function () {
-            const dbClient = new DBClient(documentClient, 'test');
+            const dbClient = new DynamoModel(documentClient, 'test');
             const response = { responses: [] };
             this.stub(BatchDeleteRequest.prototype, 'execute').resolves(response);
             const params = {
@@ -56,10 +56,10 @@ describe('#dbClient', function () {
     });
     describe('#batchGet', function () {
         it('should exist', function () {
-            expect(DBClient.prototype.batchGet).to.be.a('function');
+            expect(DynamoModel.prototype.batchGet).to.be.a('function');
         });
         it('should execute the request', sinonTest(async function () {
-            const dbClient = new DBClient(documentClient, 'test');
+            const dbClient = new DynamoModel(documentClient, 'test');
             const response = { responses: [] };
             this.stub(BatchGetRequest.prototype, 'execute').resolves(response);
             const params = {
@@ -71,10 +71,10 @@ describe('#dbClient', function () {
     });
     describe('#batchPut', function () {
         it('should exist', function () {
-            expect(DBClient.prototype.batchPut).to.be.a('function');
+            expect(DynamoModel.prototype.batchPut).to.be.a('function');
         });
         it('should execute the request', sinonTest(async function () {
-            const dbClient = new DBClient(documentClient, 'test');
+            const dbClient = new DynamoModel(documentClient, 'test');
             const response = { responses: [] };
             this.stub(BatchPutRequest.prototype, 'execute').resolves(response);
             const params = {
@@ -86,10 +86,10 @@ describe('#dbClient', function () {
     });
     describe('#delete', function () {
         it('should exist', function () {
-            expect(DBClient.prototype.delete).to.be.a('function');
+            expect(DynamoModel.prototype.delete).to.be.a('function');
         });
         it('should execute the request', sinonTest(async function () {
-            const dbClient = new DBClient(documentClient, 'test');
+            const dbClient = new DynamoModel(documentClient, 'test');
             const response = { responses: [] };
             this.stub(DeleteRequest.prototype, 'execute').resolves(response);
             const params = {
@@ -101,10 +101,10 @@ describe('#dbClient', function () {
     });
     describe('#get', function () {
         it('should exist', function () {
-            expect(DBClient.prototype.get).to.be.a('function');
+            expect(DynamoModel.prototype.get).to.be.a('function');
         });
         it('should execute the request', sinonTest(async function () {
-            const dbClient = new DBClient(documentClient, 'test');
+            const dbClient = new DynamoModel(documentClient, 'test');
             const response = { responses: [] };
             this.stub(GetRequest.prototype, 'execute').resolves(response);
             const params = {
@@ -116,10 +116,10 @@ describe('#dbClient', function () {
     });
     describe('#put', function () {
         it('should exist', function () {
-            expect(DBClient.prototype.put).to.be.a('function');
+            expect(DynamoModel.prototype.put).to.be.a('function');
         });
         it('should execute the request', sinonTest(async function () {
-            const dbClient = new DBClient(documentClient, 'test');
+            const dbClient = new DynamoModel(documentClient, 'test');
             const response = { responses: [] };
             this.stub(PutRequest.prototype, 'execute').resolves(response);
             const params = {
@@ -131,10 +131,10 @@ describe('#dbClient', function () {
     });
     describe('#query', function () {
         it('should exist', function () {
-            expect(DBClient.prototype.query).to.be.a('function');
+            expect(DynamoModel.prototype.query).to.be.a('function');
         });
         it('should execute the request', sinonTest(async function () {
-            const dbClient = new DBClient(documentClient, 'test');
+            const dbClient = new DynamoModel(documentClient, 'test');
             const response = { responses: [] };
             this.stub(QueryRequest.prototype, 'execute').resolves(response);
             const params = {
@@ -145,10 +145,10 @@ describe('#dbClient', function () {
     });
     describe('#scan', function () {
         it('should exist', function () {
-            expect(DBClient.prototype.scan).to.be.a('function');
+            expect(DynamoModel.prototype.scan).to.be.a('function');
         });
         it('should execute the request', sinonTest(async function () {
-            const dbClient = new DBClient(documentClient, 'test');
+            const dbClient = new DynamoModel(documentClient, 'test');
             const response = { responses: [] };
             this.stub(ScanRequest.prototype, 'execute').resolves(response);
             const params = {
@@ -159,10 +159,10 @@ describe('#dbClient', function () {
     });
     describe('#update', function () {
         it('should exist', function () {
-            expect(DBClient.prototype.update).to.be.a('function');
+            expect(DynamoModel.prototype.update).to.be.a('function');
         });
         it('should execute the request', sinonTest(async function () {
-            const dbClient = new DBClient(documentClient, 'test');
+            const dbClient = new DynamoModel(documentClient, 'test');
             const response = { responses: [] };
             this.stub(UpdateRequest.prototype, 'execute').resolves(response);
             const params = {

@@ -8,7 +8,7 @@ import { path } from '../../src/expression/expression';
 import { sortKey } from '../../src/expression/expression';
 import { attributeType, equals } from '../../src/expression/conditionExpression';
 import { value } from '../../src/expression/expression';
-import { DBClient } from '../../src';
+import { DynamoModel } from '../../src';
 
 describe('#scanRequest', function () {
     describe('#constructor', function () {
@@ -28,7 +28,7 @@ describe('#scanRequest', function () {
             expect(ScanRequest.prototype.execute).to.be.a('function');
         });
         it('should test params conversion 1', sinonTest(async function () {
-            const params: DBClient.ScanInput = {
+            const params: DynamoModel.ScanInput = {
                 consistentRead: true,
                 countLimit: 10,
                 exclusiveStartKey: {
@@ -78,7 +78,7 @@ describe('#scanRequest', function () {
             expect(awsParams).deep.equals(expectedAwsParams);
         }));
         it('should test params conversion 2', sinonTest(async function () {
-            const params: DBClient.ScanInput = {
+            const params: DynamoModel.ScanInput = {
                 consistentRead: true,
                 countLimit: 10,
                 exclusiveStartKey: {

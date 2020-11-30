@@ -7,7 +7,7 @@ import { fakeTable, FakeAModel, FakeBModel } from './utils';
 import { and, attributeExists } from '../../src/expression/conditionExpression';
 import { hashKey, sortKey, path, value } from '../../src/expression/expression';
 import { Updatable } from '../../src/expression/updateExpression';
-import { DBClient } from '../../src';
+import { DynamoModel } from '../../src';
 
 describe('#updateRequest', function () {
     describe('#constructor', function () {
@@ -28,7 +28,7 @@ describe('#updateRequest', function () {
             expect(UpdateRequest.prototype.execute).to.be.a('function');
         });
         it('should test params conversion : update from an item', sinonTest(async function () {
-            const params: DBClient.UpdateItemInput = {
+            const params: DynamoModel.UpdateItemInput = {
                 condition: and(
                     attributeExists(hashKey()),
                     attributeExists(sortKey())
@@ -68,7 +68,7 @@ describe('#updateRequest', function () {
             expect(awsParams).deep.equals(expectedAwsParams);
         }));
         it('should test params conversion : update from an expression', sinonTest(async function () {
-            const params: DBClient.UpdateExpressionInput = {
+            const params: DynamoModel.UpdateExpressionInput = {
                 condition: and(
                     attributeExists(hashKey()),
                     attributeExists(sortKey())
@@ -109,7 +109,7 @@ describe('#updateRequest', function () {
             expect(awsParams).deep.equals(expectedAwsParams);
         }));
         it('should test, with a model, params conversion : update from an expression', sinonTest(async function () {
-            const params: DBClient.UpdateExpressionInput = {
+            const params: DynamoModel.UpdateExpressionInput = {
                 condition: and(
                     attributeExists(hashKey()),
                     attributeExists(sortKey())

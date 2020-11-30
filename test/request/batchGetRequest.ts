@@ -5,7 +5,7 @@ import { BatchGetRequest } from '../../src/request/batchGetRequest'
 import { documentClient } from '../testUtils';
 import { fakeTable, FakeAModel, FakeBModel } from './utils';
 import { path } from '../../src/expression/expression';
-import { DBClient } from '../../src';
+import { DynamoModel } from '../../src';
 
 describe('#batchGetRequest', function () {
     describe('#constructor', function () {
@@ -26,7 +26,7 @@ describe('#batchGetRequest', function () {
             expect(BatchGetRequest.prototype.execute).to.be.a('function');
         });
         it('should test params conversion', sinonTest(async function () {
-            const params: DBClient.BatchGetInput = {
+            const params: DynamoModel.BatchGetInput = {
                 table: fakeTable,
                 consistentRead: true,
                 keys: [

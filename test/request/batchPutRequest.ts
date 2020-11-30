@@ -4,7 +4,7 @@ import { sinonTest } from '../testUtils';
 import { BatchPutRequest } from '../../src/request/batchPutRequest';
 import { documentClient } from '../testUtils';
 import { fakeTable, FakeAModel, FakeBModel } from './utils';
-import { DBClient } from '../../src';
+import { DynamoModel } from '../../src';
 
 describe('#batchPutRequest', function () {
     describe('#constructor', function () {
@@ -25,7 +25,7 @@ describe('#batchPutRequest', function () {
             expect(BatchPutRequest.prototype.execute).to.be.a('function');
         });
         it('should test params conversion', sinonTest(async function () {
-            const params: DBClient.BatchPutInput = {
+            const params: DynamoModel.BatchPutInput = {
                 table: fakeTable,
                 items: [
                     {
