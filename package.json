@@ -1,5 +1,5 @@
 {
-  "name": "dynamo-model",
+  "name": "dynamodel-client",
   "version": "0.0.1",
   "description": "Amazon's DynamoDB client to manage multiple models per table.",
   "main": "lib/index.js",

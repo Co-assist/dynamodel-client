@@ -13,7 +13,7 @@ import { ConditionExpression } from './expression/conditionExpression';
 import { Table } from './table';
 import { Model } from './model';
 
-export class DynamoModel {
+export class Dynamodel {
   constructor(private documentClient: AWS.DynamoDB.DocumentClient, private stage: string) {}
 
   batchDelete(params: BatchDeleteInput): Promise<BatchDeleteOutput> {

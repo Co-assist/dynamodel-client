@@ -6,7 +6,7 @@ import { documentClient } from '../testUtils';
 import { fakeTable, FakeAModel } from './utils';
 import { and, attributeNotExists } from '../../src/expression/conditionExpression';
 import { hashKey, sortKey } from '../../src/expression/expression';
-import * as DynamoModel from '../../src';
+import * as Dynamodel from '../../src';
 
 describe('#putRequest', function () {
     describe('#constructor', function () {
@@ -27,7 +27,7 @@ describe('#putRequest', function () {
             expect(PutRequest.prototype.execute).to.be.a('function');
         });
         it('should test params conversion', sinonTest(async function () {
-            const params: DynamoModel.PutInput = {
+            const params: Dynamodel.PutInput = {
                 condition: and(
                     attributeNotExists(hashKey()),
                     attributeNotExists(sortKey())

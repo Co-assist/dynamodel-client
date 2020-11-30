@@ -7,7 +7,7 @@ import { fakeTable } from './utils';
 import { path } from '../../src/expression/expression';
 import { attributeType } from '../../src/expression/conditionExpression';
 import { value } from '../../src/expression/expression';
-import * as DynamoModel from '../../src';
+import * as Dynamodel from '../../src';
 
 describe('#scanRequest', function () {
     describe('#constructor', function () {
@@ -27,7 +27,7 @@ describe('#scanRequest', function () {
             expect(ScanRequest.prototype.execute).to.be.a('function');
         });
         it('should test params conversion 1', sinonTest(async function () {
-            const params: DynamoModel.ScanInput = {
+            const params: Dynamodel.ScanInput = {
                 consistentRead: true,
                 countLimit: 10,
                 exclusiveStartKey: {
@@ -77,7 +77,7 @@ describe('#scanRequest', function () {
             expect(awsParams).deep.equals(expectedAwsParams);
         }));
         it('should test params conversion 2', sinonTest(async function () {
-            const params: DynamoModel.ScanInput = {
+            const params: Dynamodel.ScanInput = {
                 consistentRead: true,
                 countLimit: 10,
                 exclusiveStartKey: {
