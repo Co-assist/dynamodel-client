@@ -6,7 +6,7 @@ import { mergeScanConsumedCapacities } from '../util/dynamoOutputUtils';
 import { Table } from '../table';
 import { toModel, Model } from '../model';
 import { ExpressionContext } from '../expression/expression';
-import { AttributeMap, ReturnConsumedCapacity, ScanInput, ScanOutput, Select } from '../dbClient';
+import { AttributeMap, ReturnConsumedCapacity, ScanInput, ScanOutput, Select } from '../client';
 
 export class ScanRequest {
   private table: Table;

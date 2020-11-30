@@ -3,9 +3,9 @@ import * as AWS from 'aws-sdk';
 import { sinonTest } from '../testUtils';
 import { GetRequest } from '../../src/request/getRequest';
 import { documentClient } from '../testUtils';
-import { fakeTable, FakeAModel, FakeBModel } from './utils';
+import { fakeTable } from './utils';
 import { path } from '../../src/expression/expression';
-import { DynamoModel } from '../../src';
+import * as DynamoModel from '../../src';
 
 describe('#getRequest', function () {
     describe('#constructor', function () {

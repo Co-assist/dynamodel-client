@@ -1,4 +1,4 @@
-import { AttributeMap, BatchGetInput, BatchGetOutput, ReturnConsumedCapacity } from '../dbClient';
+import { AttributeMap, BatchGetInput, BatchGetOutput, ReturnConsumedCapacity } from '../client';
 import { AttributeExpressions } from '../expression/attributeExpressions';
 import { serializeProjection } from '../expression/projectionExpression';
 import { pickKeys, splitArray, flatArray } from '../util/objectUtils';

@@ -5,7 +5,7 @@ import {
   PutReturnValues,
   ReturnConsumedCapacity,
   ReturnItemCollectionMetrics,
-} from '../dbClient';
+} from '../client';
 import { AttributeExpressions } from '../expression/attributeExpressions';
 import { ModelConstructor, isModel } from '../model';
 import { Table } from '../table';

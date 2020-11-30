@@ -1,4 +1,4 @@
-import { AttributeMap, QueryInput, QueryOutput, ReturnConsumedCapacity, Select } from '../dbClient';
+import { AttributeMap, QueryInput, QueryOutput, ReturnConsumedCapacity, Select } from '../client';
 import { AttributeExpressions } from '../expression/attributeExpressions';
 import { PromiseResult } from 'aws-sdk/lib/request';
 import { serializeProjection } from '../expression/projectionExpression';

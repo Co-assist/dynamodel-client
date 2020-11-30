@@ -3,12 +3,11 @@ import * as AWS from 'aws-sdk';
 import { sinonTest } from '../testUtils';
 import { ScanRequest } from '../../src/request/scanRequest';
 import { documentClient } from '../testUtils';
-import { fakeTable, FakeAModel, FakeBModel } from './utils';
+import { fakeTable } from './utils';
 import { path } from '../../src/expression/expression';
-import { sortKey } from '../../src/expression/expression';
-import { attributeType, equals } from '../../src/expression/conditionExpression';
+import { attributeType } from '../../src/expression/conditionExpression';
 import { value } from '../../src/expression/expression';
-import { DynamoModel } from '../../src';
+import * as DynamoModel from '../../src';
 
 describe('#scanRequest', function () {
     describe('#constructor', function () {

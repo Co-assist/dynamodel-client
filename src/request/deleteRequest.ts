@@ -5,7 +5,7 @@ import {
   DeleteReturnValues,
   ReturnConsumedCapacity,
   ReturnItemCollectionMetrics,
-} from '../dbClient';
+} from '../client';
 import { AttributeExpressions } from '../expression/attributeExpressions';
 import { Table } from '../table';
 import { toModel } from '../model';

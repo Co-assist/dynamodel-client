@@ -3,10 +3,10 @@ import * as AWS from 'aws-sdk';
 import { sinonTest } from '../testUtils';
 import { PutRequest } from '../../src/request/putRequest';
 import { documentClient } from '../testUtils';
-import { fakeTable, FakeAModel, FakeBModel } from './utils';
+import { fakeTable, FakeAModel } from './utils';
 import { and, attributeNotExists } from '../../src/expression/conditionExpression';
 import { hashKey, sortKey } from '../../src/expression/expression';
-import { DynamoModel } from '../../src';
+import * as DynamoModel from '../../src';
 
 describe('#putRequest', function () {
     describe('#constructor', function () {

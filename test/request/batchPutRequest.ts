@@ -4,7 +4,7 @@ import { sinonTest } from '../testUtils';
 import { BatchPutRequest } from '../../src/request/batchPutRequest';
 import { documentClient } from '../testUtils';
 import { fakeTable, FakeAModel, FakeBModel } from './utils';
-import { DynamoModel } from '../../src';
+import * as DynamoModel from '../../src';
 
 describe('#batchPutRequest', function () {
     describe('#constructor', function () {

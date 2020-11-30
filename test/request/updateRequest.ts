@@ -3,11 +3,11 @@ import * as AWS from 'aws-sdk';
 import { sinonTest } from '../testUtils';
 import { UpdateRequest } from '../../src/request/updateRequest';
 import { documentClient } from '../testUtils';
-import { fakeTable, FakeAModel, FakeBModel } from './utils';
+import { fakeTable, FakeAModel } from './utils';
 import { and, attributeExists } from '../../src/expression/conditionExpression';
 import { hashKey, sortKey, path, value } from '../../src/expression/expression';
 import { Updatable } from '../../src/expression/updateExpression';
-import { DynamoModel } from '../../src';
+import * as DynamoModel from '../../src';
 
 describe('#updateRequest', function () {
     describe('#constructor', function () {

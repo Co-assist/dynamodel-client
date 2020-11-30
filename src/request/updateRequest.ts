@@ -13,7 +13,7 @@ import {
   UpdateItemInput,
   UpdateOutput,
   UpdateReturnValues,
-} from '../dbClient';
+} from '../client';
 
 export class UpdateRequest {
   private table: Table;

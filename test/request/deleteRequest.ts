@@ -3,10 +3,10 @@ import { expect } from 'chai';
 import * as AWS from 'aws-sdk';
 import { sinonTest } from '../testUtils';
 import { documentClient } from '../testUtils';
-import { fakeTable, FakeAModel, FakeBModel } from './utils';
+import { fakeTable } from './utils';
 import { equals } from '../../src/expression/conditionExpression';
 import { sortKey, value } from '../../src/expression/expression';
-import { DynamoModel } from '../../src';
+import * as DynamoModel from '../../src';
 
 describe('#deleteRequest', function () {
     describe('#constructor', function () {

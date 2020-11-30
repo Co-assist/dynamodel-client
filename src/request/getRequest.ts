@@ -1,4 +1,4 @@
-import { AttributeMap, GetInput, GetOutput, ReturnConsumedCapacity } from '../dbClient';
+import { AttributeMap, GetInput, GetOutput, ReturnConsumedCapacity } from '../client';
 import { AttributeExpressions } from '../expression/attributeExpressions';
 import { serializeProjection } from '../expression/projectionExpression';
 import { Table } from '../table';

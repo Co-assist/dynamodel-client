@@ -4,7 +4,7 @@ import {
   BatchDeleteOutput,
   ReturnConsumedCapacity,
   ReturnItemCollectionMetrics,
-} from '../dbClient';
+} from '../client';
 import {
   mergeItemCollectionMetrics,
   mergeBatchWriteConsumedCapacities,

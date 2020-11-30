@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { DynamoModel } from '../src/dbClient';
+import { DynamoModel } from '../src/client';
 import { model } from '../src/model';
 import { documentClient, sinonTest } from './testUtils';
 import { BatchDeleteRequest } from '../src/request/batchDeleteRequest';

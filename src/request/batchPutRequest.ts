@@ -4,7 +4,7 @@ import {
   BatchPutOutput,
   ReturnConsumedCapacity,
   ReturnItemCollectionMetrics,
-} from '../dbClient';
+} from '../client';
 import { splitArray } from '../util/objectUtils';
 import {
   mergeItemCollectionMetrics,

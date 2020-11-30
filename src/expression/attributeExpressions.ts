@@ -1,4 +1,4 @@
-import { AttributeMap } from '../dbClient';
+import { AttributeMap } from '../client';
 import { Value, Path } from './expression';
 
 const NAME_PREFIX = '#n';

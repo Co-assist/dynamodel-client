@@ -5,7 +5,7 @@ import { BatchGetRequest } from '../../src/request/batchGetRequest'
 import { documentClient } from '../testUtils';
 import { fakeTable, FakeAModel, FakeBModel } from './utils';
 import { path } from '../../src/expression/expression';
-import { DynamoModel } from '../../src';
+import * as DynamoModel from '../../src';
 
 describe('#batchGetRequest', function () {
     describe('#constructor', function () {

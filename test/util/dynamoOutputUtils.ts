@@ -1,6 +1,6 @@
 import { PromiseResult } from 'aws-sdk/lib/request';
 import { expect } from 'chai';
-import { DynamoModel } from '../../src';
+import * as DynamoModel from '../../src';
 import { mergeItemCollectionMetrics, mergeBatchDeleteUnprocessedKeys, mergeBatchGetUnprocessedKeys, mergeBatchPutUnprocessedItems } from '../../src/util/dynamoOutputUtils';
 
 describe('#dynamoOutputUtils', function () {

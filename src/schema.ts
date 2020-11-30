@@ -1,4 +1,4 @@
-import { AttributeMap } from './dbClient';
+import { AttributeMap } from './client';
 
 export const ModelSchemaSymbol = Symbol('ModelSchema');
 

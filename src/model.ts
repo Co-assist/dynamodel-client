@@ -1,5 +1,5 @@
 import { ModelSchemaSymbol, getSchema, Schema } from './schema';
-import { AttributeMap } from './dbClient';
+import { AttributeMap } from './client';
 import { Table } from './table';
 
 export function model<T>(schema: Schema<T>): ModelConstructor<T> {
