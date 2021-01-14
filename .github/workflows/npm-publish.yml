@@ -18,8 +18,7 @@ jobs:
       - run: npm i codecov -g
       - run: npm ci
       - run: npm run coverage
-      - run: npm run report
-      - run: codecov --token=b2b10d8f-a1c5-42fb-87e8-0c3f5ca04110
+      - run: codecov --token=b2b10d8f-a1c5-42fb-87e8-0c3f5ca04110 --disable=gcov
 
   publish-npm:
     needs: build

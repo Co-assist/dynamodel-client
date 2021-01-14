@@ -24,6 +24,8 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
+      - run: npm i codecov -g
       - run: npm ci
       - run: npm run build --if-present
       - run: npm run coverage
+      - run: codecov --token=b2b10d8f-a1c5-42fb-87e8-0c3f5ca04110 --disable=gcov
