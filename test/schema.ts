@@ -6,6 +6,9 @@ describe('#schema', function () {
         it('should exists', function () {
             expect(ModelSchemaSymbol).to.be.a('symbol');
         });
+        it('should throw an error', function () {
+            expect(new Schema(null)).to.be.rejectedWith('Empty schema');
+        });
     });
     describe('#Schemaless', function () {
         it('should exists', function () {
@@ -36,7 +39,7 @@ describe('#schema', function () {
             it('should exists', function () {
                 expect(Schemaless.prototype.validatePath).to.be.a('function');
             });
-            it('should validate every path', function () {
+            it.only('should validate every path', function () {
                 const schema = new Schemaless({});
                 expect(schema.validatePath({ a: 1, b: false }, ['a'])).to.be.undefined;
             });
