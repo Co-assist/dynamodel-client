@@ -1,7 +1,11 @@
 # Dynamodel-client
+[![NPM version](https://img.shields.io/npm/v/dynamodel-client.svg)](https://www.npmjs.com/package/dynamodel-client)
+[![NPM downloads](https://img.shields.io/npm/dm/dynamodel-client.svg)](https://www.npmjs.com/package/dynamodel-client)
+[![Coverage Status](https://codecov.io/gh/Co-assist/dynamodel-client/branch/master/graph/badge.svg)](https://codecov.io/gh/Co-assist/dynamodel-client)
+
+
 
 // TODO IN PROGRESS
-
 Dynamodel est une surcouche à `DynamoDB`, plus précisément de son client `AWS.DynamoDB.DocumentClient`.
 Il permet d'effectuer les mêmes opérations que sur `DocumentClient` mais avec un meilleur contrôle sur
 la rédaction des requêtes ainsi que sur le contrôle des données, aussi bien en lecture qu'en écriture.
