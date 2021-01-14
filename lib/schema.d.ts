@@ -1,4 +1,4 @@
-import { AttributeMap } from './dbClient';
+import { AttributeMap } from './client';
 export declare const ModelSchemaSymbol: unique symbol;
 export declare class Schema<T extends AttributeMap = AttributeMap> {
     readonly json: ModelSchema<T>;

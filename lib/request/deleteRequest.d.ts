@@ -1,4 +1,4 @@
-import { DeleteInput, DeleteOutput } from '../dbClient';
+import { DeleteInput, DeleteOutput } from '../client';
 export declare class DeleteRequest {
     private documentClient;
     private stage;

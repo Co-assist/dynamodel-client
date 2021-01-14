@@ -1,4 +1,4 @@
-import { AttributeMap } from '../dbClient';
+import { AttributeMap } from '../client';
 import { Value } from './expression';
 export declare class AttributeExpressions {
     names: AttributeMap | undefined;
