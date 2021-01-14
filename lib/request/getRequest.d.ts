@@ -1,4 +1,4 @@
-import { GetInput, GetOutput } from '../dbClient';
+import { GetInput, GetOutput } from '../client';
 export declare class GetRequest {
     private documentClient;
     private stage;

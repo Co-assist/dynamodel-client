@@ -1,5 +1,5 @@
 import { ModelSchemaSymbol, Schema } from './schema';
-import { AttributeMap } from './dbClient';
+import { AttributeMap } from './client';
 import { Table } from './table';
 export declare function model<T>(schema: Schema<T>): ModelConstructor<T>;
 export declare function isModel(item: any): item is Model;

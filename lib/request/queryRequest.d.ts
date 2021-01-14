@@ -1,4 +1,4 @@
-import { QueryInput, QueryOutput } from '../dbClient';
+import { QueryInput, QueryOutput } from '../client';
 export declare class QueryRequest {
     private documentClient;
     private stage;

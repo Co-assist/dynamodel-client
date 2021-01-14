@@ -1,4 +1,4 @@
-import { BatchGetInput, BatchGetOutput } from '../dbClient';
+import { BatchGetInput, BatchGetOutput } from '../client';
 export declare const BATCH_GET_LIMIT = 25;
 export declare class BatchGetRequest {
     private documentClient;

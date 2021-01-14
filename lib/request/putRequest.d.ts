@@ -1,4 +1,4 @@
-import { PutInput, PutOutput } from '../dbClient';
+import { PutInput, PutOutput } from '../client';
 export declare class PutRequest {
     private documentClient;
     private stage;

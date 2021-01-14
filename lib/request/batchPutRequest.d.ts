@@ -1,4 +1,4 @@
-import { BatchPutInput, BatchPutOutput } from '../dbClient';
+import { BatchPutInput, BatchPutOutput } from '../client';
 export declare const BATCH_PUT_LIMIT = 25;
 export declare class BatchPutRequest {
     private documentClient;
