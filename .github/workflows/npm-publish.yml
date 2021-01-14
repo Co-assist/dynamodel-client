@@ -15,8 +15,11 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 12
+      - run: npm i codecov -g
       - run: npm ci
-      - run: npm test
+      - run: npm run coverage
+      - run: npm run report
+      - run: codecov --token=b2b10d8f-a1c5-42fb-87e8-0c3f5ca04110
 
   publish-npm:
     needs: build
