@@ -1,4 +1,4 @@
-import { BatchDeleteInput, BatchDeleteOutput } from '../dbClient';
+import { BatchDeleteInput, BatchDeleteOutput } from '../client';
 export declare const BATCH_DELETE_LIMIT = 25;
 export declare class BatchDeleteRequest {
     private documentClient;

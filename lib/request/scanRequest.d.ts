@@ -1,4 +1,4 @@
-import { ScanInput, ScanOutput } from '../dbClient';
+import { ScanInput, ScanOutput } from '../client';
 export declare class ScanRequest {
     private documentClient;
     private stage;

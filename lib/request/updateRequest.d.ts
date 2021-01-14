@@ -1,4 +1,4 @@
-import { UpdateInput, UpdateOutput } from '../dbClient';
+import { UpdateInput, UpdateOutput } from '../client';
 export declare class UpdateRequest {
     private documentClient;
     private stage;
