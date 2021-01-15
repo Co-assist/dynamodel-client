@@ -1,0 +1,19 @@
+{
+    "configurations": [
+        {
+            "name": "Debug Unit tests",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+            "args": [
+                "${workspaceFolder}/test/**/*.ts",
+                "--require",
+                "ts-node/register",
+                "--grep",
+                "${fileBasenameNoExtension}",
+                "--timeout",
+                "9999999"
+            ]
+        }
+    ]
+}
