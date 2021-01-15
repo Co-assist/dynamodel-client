@@ -1,6 +1,6 @@
 {
   "name": "dynamodel-client",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Amazon's DynamoDB client to manage multiple models per table.",
   "homepage": "https://github.com/Co-assist/dynamodel-client",
   "repository": {
@@ -21,8 +21,8 @@
     "preversion": "npm run lint",
     "version": "npm run format && git add -A src",
     "postversion": "git push && git push --tags",
-    "test": "mocha --require ts-node/register --require ./test/hooks.ts ./test/**/*.ts",
-    "coverage": "nyc --check-coverage --per-file --branches=79 --functions=100 --lines=90 --reporter=html --reporter=text --reporter=json mocha --require ts-node/register --require ./test/hooks.ts ./test/**/*.ts && mv coverage/coverage-final.json coverage/coverage.json"
+    "test": "mocha --require ts-node/register --require ./test/hooks.ts ./test/*.ts ./test/**/*.ts",
+    "coverage": "nyc --check-coverage --per-file --branches=79 --functions=100 --lines=90 --reporter=html --reporter=text --reporter=json mocha --require ts-node/register --require ./test/hooks.ts ./test/*.ts ./test/**/*.ts && mv coverage/coverage-final.json coverage/coverage.json"
   },
   "keywords": [
     "aws",
