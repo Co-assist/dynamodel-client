@@ -26,7 +26,7 @@ export function mergeBatchGetUnprocessedKeys(
   responses: PromiseResult<AWS.DynamoDB.DocumentClient.BatchGetItemOutput, AWS.AWSError>[],
   tableName: string,
 ) {
-  return flatArray(responses.map((response) => response.UnprocessedKeys?.[tableName].Keys).filter(isDefine));
+  return flatArray(responses.map((response) => response.UnprocessedKeys?.[tableName]?.Keys).filter(isDefine));
 }
 
 /* istanbul ignore next */
