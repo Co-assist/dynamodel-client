@@ -1,6 +1,6 @@
 {
   "name": "dynamodel-client",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Amazon's DynamoDB client to manage multiple models per table.",
   "homepage": "https://github.com/Co-assist/dynamodel-client",
   "repository": {
@@ -26,7 +26,7 @@
   },
   "keywords": [
     "aws",
-    "dynamo",
+    "dynamoDB",
     "mapper"
   ],
   "author": "Yoann Eichelberger",
