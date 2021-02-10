@@ -26,7 +26,7 @@
   },
   "keywords": [
     "aws",
-    "dynamo",
+    "dynamoDB",
     "mapper"
   ],
   "author": "Yoann Eichelberger",
