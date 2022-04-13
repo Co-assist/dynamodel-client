@@ -22,7 +22,7 @@ export namespace Table {
 export class Table {
   #primaryKeyPaths!: string[];
 
-  constructor(private schema: TableSchema) {}
+  constructor(private schema: TableSchema) { }
 
   get primaryKey(): Table.Index {
     return this.schema.primaryKey;
@@ -56,13 +56,13 @@ export class Table {
     if (isModel(item)) {
       constructor = item.constructor as ModelConstructor;
       if (!this.containsConstructor(constructor)) {
-        throw new Error(`'${constructor.name}' is not supported in the table '${this.schema.name}'`);
+        throw new Error(`'${constructor.name}' is not supported in the table '${this.schema.name}', on item ${JSON.stringify(item)}`);
       }
     } else {
       const primaryKeyNames = this.primaryKeyNames;
       constructor = this.constructors.find((constructor) => this.matchConstructor(item, constructor, primaryKeyNames));
       if (!constructor) {
-        throw new Error(`No constructor found in the table '${this.schema.name}'`);
+        throw new Error(`No constructor found in the table '${this.schema.name}', on item ${JSON.stringify(item)}`);
       }
     }
     return constructor;
