@@ -131,10 +131,15 @@ const myTable = new Table({
     models: [
         FooModel,
         BarModel
-    ]
+    ],
+    modelKey: {
+        path: 'modelKeyPath'
+    }
 });
 ```
 
+modelKey (optionnel) permet d'identifier le bon modèle à l'aide d'un attribut supplémentaire 
+(ex: les modèles d'une table sont différenciés par un autre attribut que ceux de la clé primaire).
 ## Requests
 
 Liste des opérations du client.
