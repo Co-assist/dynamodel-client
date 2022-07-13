@@ -68,8 +68,8 @@ export class Table {
         throw new Error(`'${constructor.name}' is not supported in the table '${this.schema.name}', on item ${JSON.stringify(item)}`);
       }
     } else {
-      const primaryKeyNames = this.primaryKeyNames;
-      if (this.modelKey) {
+      const primaryKeyNames = [...this.primaryKeyNames];
+      if (this.modelKey && item[this.modelKey.path]) {
         primaryKeyNames.push(this.modelKey.path);
       }
       constructor = this.constructors.find((constructor) => this.matchConstructor(item, constructor, primaryKeyNames));

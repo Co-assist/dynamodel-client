@@ -144,7 +144,7 @@ describe('#table', function () {
                 expect(() => table.getModelConstructor({ type: 'test2' })).to.throws('No constructor found');
                 expect(() => table.getModelConstructor(new Test2Model({ type: 'a' }))).to.throws(`'ModelImpl' is not supported`);
             });
-            it('should not found the associated model constructor with modelKey', function () {
+            it('should found the associated model constructor with modelKey', function () {
                 const test1schema = new Schema({
                     type: {
                         test: (value) => typeof value === 'string'
@@ -174,6 +174,7 @@ describe('#table', function () {
                 expect(() => table.getModelConstructor({ type: 'a', dataType: 'error' })).to.throws('No constructor found');
                 expect(table.getModelConstructor({ type: 'a', dataType: 'otherDataType' })).to.equals(Test1Model);
                 expect(table.getModelConstructor({ type: 'a', dataType: 'dataTypeTest' })).to.equals(Test2Model);
+                expect(table.getModelConstructor({ type: 'a' })).to.equals(Test1Model);
             });
         });
     });
