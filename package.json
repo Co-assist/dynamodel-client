@@ -1,6 +1,6 @@
 {
   "name": "dynamodel-client",
-  "version": "0.1.11-model-key.1",
+  "version": "0.1.11",
   "description": "Amazon's DynamoDB client to manage multiple models per table.",
   "homepage": "https://github.com/Co-assist/dynamodel-client",
   "repository": {
