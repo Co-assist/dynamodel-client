@@ -4,6 +4,7 @@ export interface TableSchema {
     models: ModelConstructor<any>[];
     name: string;
     primaryKey: Table.Index;
+    modelKey?: Table.ModelKey;
 }
 export declare namespace Table {
     interface Indexes {
@@ -13,6 +14,9 @@ export declare namespace Table {
         hash: string;
         sort?: string;
     }
+    interface ModelKey {
+        path: string;
+    }
 }
 export declare class Table {
     #private;
@@ -21,6 +25,7 @@ export declare class Table {
     get primaryKey(): Table.Index;
     get primaryKeyNames(): string[];
     get constructors(): ModelConstructor<any>[];
+    get modelKey(): Table.ModelKey | undefined;
     getName(stage?: string): string;
     getIndex(indexName: string): Table.Index;
     getModelConstructor(item: any): ModelConstructor;
