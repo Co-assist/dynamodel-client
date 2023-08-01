@@ -1,14 +1,17 @@
 import { expect } from 'chai';
-import * as AWS from 'aws-sdk';
-import { sinonTest } from '../testUtils';
+import { dynamoDBMock, sinonTest } from '../testUtils';
 import { PutRequest } from '../../src/request/putRequest';
 import { documentClient } from '../testUtils';
 import { fakeTable, FakeAModel } from './utils';
 import { and, attributeNotExists } from '../../src/expression/conditionExpression';
 import { hashKey, sortKey } from '../../src/expression/expression';
 import * as Dynamodel from '../../src';
+import { PutItemCommand, PutItemCommandOutput } from '@aws-sdk/client-dynamodb';
 
 describe('#putRequest', function () {
+    beforeEach(() => {
+        dynamoDBMock.reset();
+    });
     describe('#constructor', function () {
         it('should exists', function () {
             expect(PutRequest).to.be.a('function');
@@ -38,7 +41,7 @@ describe('#putRequest', function () {
                 returnValues: 'ALL_OLD',
                 table: fakeTable,
             };
-            const expectedAwsParams: AWS.DynamoDB.DocumentClient.PutItemInput = {
+            const expectedAwsParams = {
                 ConditionExpression: '(attribute_not_exists(#n0) AND attribute_not_exists(#n1))',
                 ExpressionAttributeNames: {
                     '#n0': 'id',
@@ -55,12 +58,11 @@ describe('#putRequest', function () {
                 ReturnValues: 'ALL_OLD',
                 TableName: 'dev-fake'
             };
-            const awsRequestStub = this.stub(AWS.DynamoDB.DocumentClient.prototype, 'put').returns({
-                promise: () => Promise.resolve({ Attributes: [] })
-            });
+            dynamoDBMock.on(PutItemCommand).resolves(<PutItemCommandOutput><unknown>{ Attributes: [] });
+            const awsRequestStub = dynamoDBMock.send
             const request = new PutRequest(documentClient, params, 'dev');
             await request.execute();
-            const awsParams = awsRequestStub.args[0][0];
+            const awsParams = awsRequestStub.args[0][0].input;
             expect(awsParams).deep.equals(expectedAwsParams);
         }));
     });

@@ -1,6 +1,5 @@
 import { expect } from 'chai';
-import * as AWS from 'aws-sdk';
-import { sinonTest } from '../testUtils';
+import { dynamoDBMock, sinonTest } from '../testUtils';
 import { UpdateRequest } from '../../src/request/updateRequest';
 import { documentClient } from '../testUtils';
 import { fakeTable, FakeAModel } from './utils';
@@ -8,8 +7,12 @@ import { and, attributeExists } from '../../src/expression/conditionExpression';
 import { hashKey, sortKey, path, value } from '../../src/expression/expression';
 import { Updatable } from '../../src/expression/updateExpression';
 import * as Dynamodel from '../../src';
+import { UpdateItemCommand, UpdateItemCommandOutput } from '@aws-sdk/client-dynamodb';
 
 describe('#updateRequest', function () {
+    beforeEach(() => {
+        dynamoDBMock.reset();
+    });
     describe('#constructor', function () {
         it('should exists', function () {
             expect(UpdateRequest).to.be.a('function');
@@ -39,7 +42,7 @@ describe('#updateRequest', function () {
                 returnValues: 'ALL_NEW',
                 table: fakeTable
             };
-            const expectedAwsParams: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
+            const expectedAwsParams = {
                 ConditionExpression: '(attribute_exists(#n0) AND attribute_exists(#n1))',
                 ExpressionAttributeNames: {
                     '#n0': 'id',
@@ -59,12 +62,11 @@ describe('#updateRequest', function () {
                 TableName: 'dev-fake',
                 UpdateExpression: 'SET #n2 = :v0'
             };
-            const awsRequestStub = this.stub(AWS.DynamoDB.DocumentClient.prototype, 'update').returns({
-                promise: () => Promise.resolve({})
-            });
+            dynamoDBMock.on(UpdateItemCommand).resolves(<UpdateItemCommandOutput><unknown>{})
+            const awsRequestStub = dynamoDBMock.send;
             const request = new UpdateRequest(documentClient, params, 'dev');
             await request.execute();
-            const awsParams = awsRequestStub.args[0][0];
+            const awsParams = awsRequestStub.args[0][0].input;
             expect(awsParams).deep.equals(expectedAwsParams);
         }));
         it('should test params conversion : update from an expression', sinonTest(async function () {
@@ -80,7 +82,7 @@ describe('#updateRequest', function () {
                 returnValues: 'ALL_NEW',
                 table: fakeTable
             };
-            const expectedAwsParams: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
+            const expectedAwsParams = {
                 ConditionExpression: '(attribute_exists(#n0) AND attribute_exists(#n1))',
                 ExpressionAttributeNames: {
                     '#n0': 'id',
@@ -100,12 +102,11 @@ describe('#updateRequest', function () {
                 TableName: 'dev-fake',
                 UpdateExpression: 'SET #n2 = :v0'
             };
-            const awsRequestStub = this.stub(AWS.DynamoDB.DocumentClient.prototype, 'update').returns({
-                promise: () => Promise.resolve({})
-            });
+            dynamoDBMock.on(UpdateItemCommand).resolves(<UpdateItemCommandOutput><unknown>{})
+            const awsRequestStub = dynamoDBMock.send;
             const request = new UpdateRequest(documentClient, params, 'dev');
             await request.execute();
-            const awsParams = awsRequestStub.args[0][0];
+            const awsParams = awsRequestStub.args[0][0].input;
             expect(awsParams).deep.equals(expectedAwsParams);
         }));
         it('should test, with a model, params conversion : update from an expression', sinonTest(async function () {
@@ -121,7 +122,7 @@ describe('#updateRequest', function () {
                 returnValues: 'ALL_NEW',
                 table: fakeTable
             };
-            const expectedAwsParams: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
+            const expectedAwsParams = {
                 ConditionExpression: '(attribute_exists(#n0) AND attribute_exists(#n1))',
                 ExpressionAttributeNames: {
                     '#n0': 'id',
@@ -141,12 +142,11 @@ describe('#updateRequest', function () {
                 TableName: 'dev-fake',
                 UpdateExpression: 'SET #n2 = :v0'
             };
-            const awsRequestStub = this.stub(AWS.DynamoDB.DocumentClient.prototype, 'update').returns({
-                promise: () => Promise.resolve({ Attributes: 'bblop' })
-            });
+            dynamoDBMock.on(UpdateItemCommand).resolves(<UpdateItemCommandOutput><unknown>{ Attributes: 'bblop' })
+            const awsRequestStub = dynamoDBMock.send;
             const request = new UpdateRequest(documentClient, params, 'dev');
             await request.execute();
-            const awsParams = awsRequestStub.args[0][0];
+            const awsParams = awsRequestStub.args[0][0].input;
             expect(awsParams).deep.equals(expectedAwsParams);
         }));
     });

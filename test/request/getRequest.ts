@@ -1,13 +1,16 @@
 import { expect } from 'chai';
-import * as AWS from 'aws-sdk';
-import { sinonTest } from '../testUtils';
+import { dynamoDBMock, sinonTest } from '../testUtils';
 import { GetRequest } from '../../src/request/getRequest';
 import { documentClient } from '../testUtils';
 import { fakeTable } from './utils';
 import { path } from '../../src/expression/expression';
 import * as Dynamodel from '../../src';
+import { GetItemCommand, GetItemCommandOutput } from '@aws-sdk/client-dynamodb';
 
 describe('#getRequest', function () {
+    beforeEach(() => {
+        dynamoDBMock.reset();
+    });
     describe('#constructor', function () {
         it('should exists', function () {
             expect(GetRequest).to.be.a('function');
@@ -36,7 +39,7 @@ describe('#getRequest', function () {
                 projection: [path('value')],
                 returnConsumedCapacity: 'TOTAL'
             };
-            const expectedAwsParams: AWS.DynamoDB.DocumentClient.GetItemInput = {
+            const expectedAwsParams = {
                 ConsistentRead: true,
                 ExpressionAttributeNames: {
                     '#n0': 'value',
@@ -49,14 +52,13 @@ describe('#getRequest', function () {
                 },
                 ProjectionExpression: '#n0, #n1, #n2',
                 ReturnConsumedCapacity: 'TOTAL',
-                TableName: 'dev-fake'
+                TableName: 'dev-fake',
             };
-            const awsRequestStub = this.stub(AWS.DynamoDB.DocumentClient.prototype, 'get').returns({
-                promise: () => Promise.resolve({ Item: { id: 1, type: 'b' } })
-            });
+            dynamoDBMock.on(GetItemCommand).resolves(<GetItemCommandOutput><unknown>{ Item: { id: 1, type: 'b' } })
+            const awsRequestStub = dynamoDBMock.send
             const request = new GetRequest(documentClient, params, 'dev');
             await request.execute();
-            const awsParams = awsRequestStub.args[0][0];
+            const awsParams = awsRequestStub.args[0][0].input;
             expect(awsParams).deep.equals(expectedAwsParams);
         }));
     });

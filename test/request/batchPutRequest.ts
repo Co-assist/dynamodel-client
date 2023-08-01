@@ -1,12 +1,15 @@
 import { expect } from 'chai';
-import * as AWS from 'aws-sdk';
-import { sinonTest } from '../testUtils';
+import { dynamoDBMock, sinonTest } from '../testUtils';
 import { BatchPutRequest } from '../../src/request/batchPutRequest';
 import { documentClient } from '../testUtils';
 import { fakeTable, FakeAModel, FakeBModel } from './utils';
 import * as Dynamodel from '../../src';
+import { BatchWriteItemCommand } from '@aws-sdk/client-dynamodb';
 
 describe('#batchPutRequest', function () {
+    beforeEach(() => {
+        dynamoDBMock.reset();
+    });
     describe('#constructor', function () {
         it('should exists', function () {
             expect(BatchPutRequest).to.be.a('function');
@@ -39,7 +42,7 @@ describe('#batchPutRequest', function () {
                 returnConsumedCapacity: 'TOTAL',
                 returnItemCollectionMetrics: 'SIZE'
             };
-            const expectedAwsParams: AWS.DynamoDB.DocumentClient.BatchWriteItemInput = {
+            const expectedAwsParams = {
                 RequestItems: {
                     'dev-fake': [
                         {
@@ -74,12 +77,11 @@ describe('#batchPutRequest', function () {
                 ReturnConsumedCapacity: 'TOTAL',
                 ReturnItemCollectionMetrics: 'SIZE'
             };
-            const awsRequestStub = this.stub(AWS.DynamoDB.DocumentClient.prototype, 'batchWrite').returns({
-                promise: () => Promise.resolve({})
-            });
+            dynamoDBMock.on(BatchWriteItemCommand).resolves({});
+            const awsRequestStub = dynamoDBMock.send;
             const request = new BatchPutRequest(documentClient, params, 'dev');
             await request.execute();
-            const awsParams = awsRequestStub.args[0][0];
+            const awsParams = awsRequestStub.args[0][0].input;
             expect(awsParams).deep.equals(expectedAwsParams);
         }));
         it('should send multiple request for large amount of keys', sinonTest(async function () {
@@ -95,13 +97,12 @@ describe('#batchPutRequest', function () {
                 table: fakeTable,
                 items: items
             };
-            const awsRequestStub = this.stub(AWS.DynamoDB.DocumentClient.prototype, 'batchWrite').returns({
-                promise: () => Promise.resolve({})
-            });
+            dynamoDBMock.on(BatchWriteItemCommand).resolves({});
+            const awsRequestStub = dynamoDBMock.send;
             const request = new BatchPutRequest(documentClient, params, 'dev');
             await request.execute();
-            const awsParams = awsRequestStub.args[0][0];
-            expect(awsParams.RequestItems['dev-fake']).have.lengthOf(25);
+            const awsParams = awsRequestStub.args[0][0].input;
+            expect(awsParams['RequestItems']['dev-fake']).have.lengthOf(25);
             expect(awsRequestStub.callCount).equals(4);
         }));
     });
