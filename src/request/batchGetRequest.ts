@@ -6,6 +6,8 @@ import { mergeBatchGetUnprocessedKeys, mergeBatchGetConsumedCapacities } from '.
 import { Table } from '../table';
 import { toModel, Model } from '../model';
 import { ExpressionContext } from '../expression/expression';
+import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
+import { BatchGetItemCommand, BatchGetItemInput as AWSBatchGetItemInput, BatchGetItemOutput as AWSBatchGetItemOutput, BatchGetItemCommandInput as AWSBatchGetItemCommandInput } from '@aws-sdk/client-dynamodb';
 
 export const BATCH_GET_LIMIT = 25;
 
@@ -17,7 +19,7 @@ export class BatchGetRequest {
   private projectionExpression?: string;
   private attributes: AttributeExpressions;
 
-  constructor(private documentClient: AWS.DynamoDB.DocumentClient, params: BatchGetInput, private stage: string) {
+  constructor(private documentClient: DynamoDBDocumentClient, params: BatchGetInput, private stage: string) {
     this.table = params.table;
     this.consistentRead = params.consistentRead;
     this.returnConsumedCapacity = params.returnConsumedCapacity;
@@ -45,7 +47,7 @@ export class BatchGetRequest {
 
   private sendRequest(keys: AttributeMap[]) {
     const tableName = this.table.getName(this.stage);
-    const awsParams: AWS.DynamoDB.DocumentClient.BatchGetItemInput = {
+    const awsParams: AWSBatchGetItemCommandInput = {
       RequestItems: {
         [tableName]: {
           Keys: keys,
@@ -56,11 +58,12 @@ export class BatchGetRequest {
       },
       ReturnConsumedCapacity: this.returnConsumedCapacity,
     };
-    return this.documentClient.batchGet(awsParams).promise();
+    const command = new BatchGetItemCommand(awsParams);
+    return this.documentClient.send(command);
   }
 
   private buildModelsFromResponses(
-    responses: AWS.DynamoDB.DocumentClient.BatchGetItemOutput[],
+    responses: AWSBatchGetItemOutput[],
     tableName: string,
   ): Model[] {
     const items = flatArray(responses.map((response) => response.Responses?.[tableName] ?? []));

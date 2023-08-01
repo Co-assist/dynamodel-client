@@ -1,10 +1,17 @@
 // TODO: Unit tests
 import { flatArray, isDefine, sum } from './objectUtils';
-import { PromiseResult } from 'aws-sdk/lib/request';
+import {
+  BatchWriteItemOutput as AWSBatchWriteItemOutput,
+  BatchGetItemOutput as AWSBatchGetItemOutput,
+  QueryOutput as AWSQueryOutput,
+  ScanOutput as AWSScanOutput,
+  Capacity as AWSCapacity,
+  ConsumedCapacity as AWSConsumedCapacity
+} from '@aws-sdk/client-dynamodb';
 
 /* istanbul ignore next */
 export function mergeItemCollectionMetrics(
-  responses: AWS.DynamoDB.DocumentClient.BatchWriteItemOutput[],
+  responses: AWSBatchWriteItemOutput[],
   tableName: string,
 ) {
   return flatArray(responses.map((response) => response.ItemCollectionMetrics?.[tableName]).filter(isDefine));
@@ -12,7 +19,7 @@ export function mergeItemCollectionMetrics(
 
 /* istanbul ignore next */
 export function mergeBatchDeleteUnprocessedKeys(
-  responses: PromiseResult<AWS.DynamoDB.DocumentClient.BatchWriteItemOutput, AWS.AWSError>[],
+  responses: AWSBatchWriteItemOutput[],
   tableName: string,
 ) {
   const writeRequestsList = flatArray(
@@ -23,7 +30,7 @@ export function mergeBatchDeleteUnprocessedKeys(
 
 /* istanbul ignore next */
 export function mergeBatchGetUnprocessedKeys(
-  responses: PromiseResult<AWS.DynamoDB.DocumentClient.BatchGetItemOutput, AWS.AWSError>[],
+  responses: AWSBatchGetItemOutput[],
   tableName: string,
 ) {
   return flatArray(responses.map((response) => response.UnprocessedKeys?.[tableName]?.Keys).filter(isDefine));
@@ -31,7 +38,7 @@ export function mergeBatchGetUnprocessedKeys(
 
 /* istanbul ignore next */
 export function mergeBatchPutUnprocessedItems(
-  responses: PromiseResult<AWS.DynamoDB.DocumentClient.BatchWriteItemOutput, AWS.AWSError>[],
+  responses: AWSBatchWriteItemOutput[],
   tableName: string,
 ) {
   const writeRequestsList = flatArray(
@@ -42,7 +49,7 @@ export function mergeBatchPutUnprocessedItems(
 
 /* istanbul ignore next */
 export function mergeBatchGetConsumedCapacities(
-  responses: PromiseResult<AWS.DynamoDB.DocumentClient.BatchGetItemOutput, AWS.AWSError>[],
+  responses: AWSBatchGetItemOutput[],
   tableName: string,
 ) {
   const consumedCapacities = flatArray(responses.map((response) => response.ConsumedCapacity).filter(isDefine));
@@ -51,7 +58,7 @@ export function mergeBatchGetConsumedCapacities(
 
 /* istanbul ignore next */
 export function mergeBatchWriteConsumedCapacities(
-  responses: PromiseResult<AWS.DynamoDB.DocumentClient.BatchWriteItemOutput, AWS.AWSError>[],
+  responses: AWSBatchWriteItemOutput[],
   tableName: string,
 ) {
   const consumedCapacitiesMixed = flatArray(responses.map((response) => response.ConsumedCapacity).filter(isDefine));
@@ -63,7 +70,7 @@ export function mergeBatchWriteConsumedCapacities(
 
 /* istanbul ignore next */
 export function mergeQueryConsumedCapacities(
-  responses: PromiseResult<AWS.DynamoDB.DocumentClient.QueryOutput, AWS.AWSError>[],
+  responses: AWSQueryOutput[],
   tableName: string,
 ) {
   const consumedCapacities = responses.map((response) => response.ConsumedCapacity).filter(isDefine);
@@ -72,7 +79,7 @@ export function mergeQueryConsumedCapacities(
 
 /* istanbul ignore next */
 export function mergeScanConsumedCapacities(
-  responses: PromiseResult<AWS.DynamoDB.DocumentClient.ScanOutput, AWS.AWSError>[],
+  responses: AWSScanOutput[],
   tableName: string,
 ) {
   const consumedCapacities = responses.map((response) => response.ConsumedCapacity).filter(isDefine);
@@ -81,10 +88,10 @@ export function mergeScanConsumedCapacities(
 
 /* istanbul ignore next */
 export function mergeConsumedCapacities(
-  consumedCapacities: AWS.DynamoDB.DocumentClient.ConsumedCapacity[],
+  consumedCapacities: AWSConsumedCapacity[],
   tableName: string,
 ) {
-  const consumedCapacity: AWS.DynamoDB.DocumentClient.ConsumedCapacity = {
+  const consumedCapacity: AWSConsumedCapacity = {
     TableName: tableName,
     CapacityUnits: sum(consumedCapacities.map((consumedCapacity) => consumedCapacity.CapacityUnits).filter(isDefine)),
     ReadCapacityUnits: sum(
@@ -101,14 +108,14 @@ export function mergeConsumedCapacities(
 }
 
 /* istanbul ignore next */
-export function mergeConsumedCapacityTable(consumedCapacities: AWS.DynamoDB.ConsumedCapacity[]) {
+export function mergeConsumedCapacityTable(consumedCapacities: AWSConsumedCapacity[]) {
   const tableCapacities = consumedCapacities.map((consumedCapacity) => consumedCapacity.Table).filter(isDefine);
   return tableCapacities.length === 0 ? undefined : mergeTableCapacity(tableCapacities);
 }
 
 /* istanbul ignore next */
-export function mergeTableCapacity(tableCapacities: AWS.DynamoDB.DocumentClient.Capacity[]) {
-  const table: AWS.DynamoDB.DocumentClient.Capacity = {
+export function mergeTableCapacity(tableCapacities: AWSCapacity[]) {
+  const table: AWSCapacity = {
     CapacityUnits: sum(tableCapacities.map((table) => table.CapacityUnits).filter(isDefine)),
     ReadCapacityUnits: sum(tableCapacities.map((table) => table.ReadCapacityUnits).filter(isDefine)),
     WriteCapacityUnits: sum(tableCapacities.map((table) => table.WriteCapacityUnits).filter(isDefine)),
@@ -117,7 +124,7 @@ export function mergeTableCapacity(tableCapacities: AWS.DynamoDB.DocumentClient.
 }
 
 /* istanbul ignore next */
-export function mergeGlobalSecondaryIndexes(consumedCapacities: AWS.DynamoDB.ConsumedCapacity[]) {
+export function mergeGlobalSecondaryIndexes(consumedCapacities: AWSConsumedCapacity[]) {
   const indexesList = consumedCapacities
     .map((consumedCapacity) => consumedCapacity.GlobalSecondaryIndexes)
     .filter(isDefine);
@@ -125,7 +132,7 @@ export function mergeGlobalSecondaryIndexes(consumedCapacities: AWS.DynamoDB.Con
 }
 
 /* istanbul ignore next */
-export function mergeLocalSecondaryIndexes(consumedCapacities: AWS.DynamoDB.ConsumedCapacity[]) {
+export function mergeLocalSecondaryIndexes(consumedCapacities: AWSConsumedCapacity[]) {
   const indexesList = consumedCapacities
     .map((consumedCapacity) => consumedCapacity.LocalSecondaryIndexes)
     .filter(isDefine);
@@ -133,8 +140,8 @@ export function mergeLocalSecondaryIndexes(consumedCapacities: AWS.DynamoDB.Cons
 }
 
 /* istanbul ignore next */
-export function mergeSecondaryIndexes(indexesList: AWS.DynamoDB.DocumentClient.SecondaryIndexesCapacityMap[]) {
-  const newIndexes: AWS.DynamoDB.DocumentClient.SecondaryIndexesCapacityMap = {};
+export function mergeSecondaryIndexes(indexesList: AWSConsumedCapacity[]): Record<string, AWSCapacity> {
+  const newIndexes: Record<string, AWSCapacity> = {};
   indexesList.forEach((indexes) => {
     Object.keys(indexes).forEach((key) => {
       const index = indexes[key];

@@ -1,4 +1,5 @@
 import { GetInput, GetOutput } from '../client';
+import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 export declare class GetRequest {
     private documentClient;
     private stage;
@@ -8,7 +9,7 @@ export declare class GetRequest {
     private attributes;
     private projectionExpression?;
     private key;
-    constructor(documentClient: AWS.DynamoDB.DocumentClient, params: GetInput, stage: string);
+    constructor(documentClient: DynamoDBDocumentClient, params: GetInput, stage: string);
     execute(): Promise<GetOutput>;
     private sendRequest;
     private buildExpressionContext;

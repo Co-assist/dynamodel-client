@@ -14,6 +14,8 @@ import {
   UpdateOutput,
   UpdateReturnValues,
 } from '../client';
+import { UpdateItemInput as AWSUpdateItemInput, UpdateItemCommand } from '@aws-sdk/client-dynamodb';
+import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 
 export class UpdateRequest {
   private table: Table;
@@ -26,7 +28,7 @@ export class UpdateRequest {
   private updateExpression: string;
   private ModelConstructor: ModelConstructor;
 
-  constructor(private documentClient: AWS.DynamoDB.DocumentClient, params: UpdateInput, private stage: string) {
+  constructor(private documentClient: DynamoDBDocumentClient, params: UpdateInput, private stage: string) {
     this.table = params.table;
     this.returnConsumedCapacity = params.returnConsumedCapacity;
     this.returnItemCollectionMetrics = params.returnItemCollectionMetrics;
@@ -73,7 +75,7 @@ export class UpdateRequest {
   }
 
   private sendRequest() {
-    const awsParams: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
+    const awsParams: AWSUpdateItemInput = {
       ConditionExpression: this.conditionExpression,
       ExpressionAttributeNames: this.attributes.names,
       ExpressionAttributeValues: this.attributes.values,
@@ -84,7 +86,8 @@ export class UpdateRequest {
       TableName: this.table.getName(this.stage),
       UpdateExpression: this.updateExpression,
     };
-    return this.documentClient.update(awsParams).promise();
+    const command = new UpdateItemCommand(awsParams);
+    return this.documentClient.send(command);
   }
 
   private buildExpressionContext(attributes: AttributeExpressions, table: Table): ExpressionContext {

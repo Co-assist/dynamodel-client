@@ -1,5 +1,4 @@
 import { AttributeExpressions } from '../expression/attributeExpressions';
-import { PromiseResult } from 'aws-sdk/lib/request';
 import { serializeProjection } from '../expression/projectionExpression';
 import { flatArray } from '../util/objectUtils';
 import { mergeScanConsumedCapacities } from '../util/dynamoOutputUtils';
@@ -7,6 +6,8 @@ import { Table } from '../table';
 import { toModel, Model } from '../model';
 import { ExpressionContext } from '../expression/expression';
 import { AttributeMap, ReturnConsumedCapacity, ScanInput, ScanOutput, Select } from '../client';
+import { DynamoDBDocumentClient, ScanCommand } from '@aws-sdk/lib-dynamodb';
+import { ScanInput as AWSScanInput, ScanOutput as AWSScanOutput } from '@aws-sdk/client-dynamodb';
 
 export class ScanRequest {
   private table: Table;
@@ -24,7 +25,7 @@ export class ScanRequest {
   private projectionExpression?: string;
   private filterExpression?: string;
 
-  constructor(private documentClient: AWS.DynamoDB.DocumentClient, params: ScanInput, private stage: string) {
+  constructor(private documentClient: DynamoDBDocumentClient, params: ScanInput, private stage: string) {
     this.table = params.table;
     this.consistentRead = params.consistentRead;
     this.countLimit = params.countLimit ?? Number.MAX_SAFE_INTEGER;
@@ -41,7 +42,7 @@ export class ScanRequest {
   }
 
   async execute(): Promise<ScanOutput> {
-    const responses: PromiseResult<AWS.DynamoDB.DocumentClient.ScanOutput, AWS.AWSError>[] = [];
+    const responses = [];
     let lastEvaluatedKey = this.exclusiveStartKey;
     let count = 0;
     let scannedCount = 0;
@@ -64,8 +65,8 @@ export class ScanRequest {
     };
   }
 
-  private sendRequest(exclusiveStartKey: AWS.DynamoDB.DocumentClient.Key | undefined, limit: number) {
-    const awsParams: AWS.DynamoDB.DocumentClient.ScanInput = {
+  private sendRequest(exclusiveStartKey: AWSScanInput['ExclusiveStartKey'] | undefined, limit: number) {
+    const awsParams: AWSScanInput = {
       ConsistentRead: this.consistentRead,
       ExclusiveStartKey: exclusiveStartKey,
       ExpressionAttributeNames: this.attributes.names,
@@ -80,14 +81,15 @@ export class ScanRequest {
       TableName: this.table.getName(this.stage),
       TotalSegments: this.totalSegments,
     };
-    return this.documentClient.scan(awsParams).promise();
+    const command = new ScanCommand(awsParams);
+    return this.documentClient.send(command);
   }
 
   private getLimit(scannedCount: number) {
     return Math.min(this.pageSize, this.scanCountLimit - scannedCount);
   }
 
-  private buildModelsFromResponses(responses: AWS.DynamoDB.DocumentClient.QueryOutput[]): Model[] {
+  private buildModelsFromResponses(responses: AWSScanOutput[]): Model[] {
     const items = flatArray(responses.map((response) => response.Items ?? []));
     return items.map((item) => toModel(item, this.table));
   }

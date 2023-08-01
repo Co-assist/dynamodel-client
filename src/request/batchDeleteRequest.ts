@@ -12,7 +12,8 @@ import {
 } from '../util/dynamoOutputUtils';
 import { pickKeys, splitArray } from '../util/objectUtils';
 import { Table } from '../table';
-
+import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
+import { BatchWriteItemCommand, BatchWriteItemInput as AWSBatchWriteItemInput } from '@aws-sdk/client-dynamodb';
 export const BATCH_DELETE_LIMIT = 25;
 
 export class BatchDeleteRequest {
@@ -21,7 +22,7 @@ export class BatchDeleteRequest {
   private returnItemCollectionMetrics?: ReturnItemCollectionMetrics;
   private keysList: AttributeMap[][];
 
-  constructor(private documentClient: AWS.DynamoDB.DocumentClient, params: BatchDeleteInput, private stage: string) {
+  constructor(private documentClient: DynamoDBDocumentClient, params: BatchDeleteInput, private stage: string) {
     this.table = params.table;
     this.returnConsumedCapacity = params.returnConsumedCapacity;
     this.returnItemCollectionMetrics = params.returnItemCollectionMetrics;
@@ -46,7 +47,7 @@ export class BatchDeleteRequest {
 
   private sendRequest(keys: AttributeMap[]) {
     const tableName = this.table.getName(this.stage);
-    const awsParams: AWS.DynamoDB.DocumentClient.BatchWriteItemInput = {
+    const awsParams: AWSBatchWriteItemInput = {
       RequestItems: {
         [tableName]: keys.map((key) => ({
           DeleteRequest: {
@@ -57,6 +58,7 @@ export class BatchDeleteRequest {
       ReturnConsumedCapacity: this.returnConsumedCapacity,
       ReturnItemCollectionMetrics: this.returnItemCollectionMetrics,
     };
-    return this.documentClient.batchWrite(awsParams).promise();
+    const command = new BatchWriteItemCommand(awsParams);
+    return this.documentClient.send(command);
   }
 }
