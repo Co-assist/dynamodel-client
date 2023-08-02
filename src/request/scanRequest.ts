@@ -6,8 +6,7 @@ import { Table } from '../table';
 import { toModel, Model } from '../model';
 import { ExpressionContext } from '../expression/expression';
 import { AttributeMap, ReturnConsumedCapacity, ScanInput, ScanOutput, Select } from '../client';
-import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
-import { ScanCommand, ScanCommandInput as AWSScanCommandInput, ScanCommandOutput as AWSScanCommandOutput } from '@aws-sdk/client-dynamodb';
+import { DynamoDBDocumentClient, ScanCommand, ScanCommandInput, ScanCommandOutput } from '@aws-sdk/lib-dynamodb';
 
 export class ScanRequest {
   private table: Table;
@@ -65,8 +64,8 @@ export class ScanRequest {
     };
   }
 
-  private sendRequest(exclusiveStartKey: AWSScanCommandInput['ExclusiveStartKey'] | undefined, limit: number) {
-    const awsParams: AWSScanCommandInput = {
+  private sendRequest(exclusiveStartKey: ScanCommandInput['ExclusiveStartKey'] | undefined, limit: number) {
+    const awsParams: ScanCommandInput = {
       ConsistentRead: this.consistentRead,
       ExclusiveStartKey: exclusiveStartKey,
       ExpressionAttributeNames: this.attributes.names,
@@ -81,15 +80,14 @@ export class ScanRequest {
       TableName: this.table.getName(this.stage),
       TotalSegments: this.totalSegments,
     };
-    const command = new ScanCommand(awsParams);
-    return this.documentClient.send(command);
+    return this.documentClient.send(new ScanCommand(awsParams));
   }
 
   private getLimit(scannedCount: number) {
     return Math.min(this.pageSize, this.scanCountLimit - scannedCount);
   }
 
-  private buildModelsFromResponses(responses: AWSScanCommandOutput[]): Model[] {
+  private buildModelsFromResponses(responses: ScanCommandOutput[]): Model[] {
     const items = flatArray(responses.map((response) => response.Items ?? []));
     return items.map((item) => toModel(item, this.table));
   }

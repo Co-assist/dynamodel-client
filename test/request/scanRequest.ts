@@ -7,7 +7,7 @@ import { path } from '../../src/expression/expression';
 import { attributeType } from '../../src/expression/conditionExpression';
 import { value } from '../../src/expression/expression';
 import * as Dynamodel from '../../src';
-import { ScanCommand, ScanCommandOutput } from '@aws-sdk/client-dynamodb';
+import { ScanCommand, ScanCommandInput } from '@aws-sdk/lib-dynamodb';
 
 describe('#scanRequest', function () {
     beforeEach(() => {
@@ -47,7 +47,7 @@ describe('#scanRequest', function () {
                 table: fakeTable,
                 totalSegments: undefined,
             };
-            const expectedAwsParams = {
+            const expectedAwsParams: ScanCommandInput = {
                 ConsistentRead: true,
                 ExclusiveStartKey: {
                     'id': 1,
@@ -71,7 +71,7 @@ describe('#scanRequest', function () {
                 TableName: 'dev-fake',
                 TotalSegments: undefined
             };
-            dynamoDBMock.on(ScanCommand).resolves(<ScanCommandOutput><unknown>{ Count: 5, ScannedCount: 5, LastEvaluatedKey: { "blip": 1 }, Items: [{ id: 2, type: 'a' }, { id: 2, type: 'a' }] })
+            dynamoDBMock.on(ScanCommand).resolves({ Count: 5, ScannedCount: 5, LastEvaluatedKey: { "blip": 1 }, Items: [{ id: 2, type: 'a' }, { id: 2, type: 'a' }] })
             const awsRequestStub = dynamoDBMock.send;
             const request = new ScanRequest(documentClient, params, 'dev');
             await request.execute();
@@ -96,7 +96,7 @@ describe('#scanRequest', function () {
                 table: fakeTable,
                 totalSegments: undefined,
             };
-            const expectedAwsParams = {
+            const expectedAwsParams: ScanCommandInput = {
                 ConsistentRead: true,
                 ExclusiveStartKey: {
                     'id': 1,
@@ -120,7 +120,7 @@ describe('#scanRequest', function () {
                 TableName: 'dev-fake',
                 TotalSegments: undefined
             };
-            dynamoDBMock.on(ScanCommand).resolves(<ScanCommandOutput><unknown>{})
+            dynamoDBMock.on(ScanCommand).resolves({})
             const awsRequestStub = dynamoDBMock.send;
             const request = new ScanRequest(documentClient, params, 'dev');
             await request.execute();

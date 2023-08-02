@@ -14,8 +14,7 @@ import {
   UpdateOutput,
   UpdateReturnValues,
 } from '../client';
-import { UpdateItemInput as AWSUpdateItemInput, UpdateItemCommand } from '@aws-sdk/client-dynamodb';
-import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
+import { DynamoDBDocumentClient, UpdateCommand, UpdateCommandInput } from '@aws-sdk/lib-dynamodb';
 
 export class UpdateRequest {
   private table: Table;
@@ -75,7 +74,7 @@ export class UpdateRequest {
   }
 
   private sendRequest() {
-    const awsParams: AWSUpdateItemInput = {
+    const awsParams: UpdateCommandInput = {
       ConditionExpression: this.conditionExpression,
       ExpressionAttributeNames: this.attributes.names,
       ExpressionAttributeValues: this.attributes.values,
@@ -86,8 +85,7 @@ export class UpdateRequest {
       TableName: this.table.getName(this.stage),
       UpdateExpression: this.updateExpression,
     };
-    const command = new UpdateItemCommand(awsParams);
-    return this.documentClient.send(command);
+    return this.documentClient.send(new UpdateCommand(awsParams));
   }
 
   private buildExpressionContext(attributes: AttributeExpressions, table: Table): ExpressionContext {

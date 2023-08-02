@@ -5,8 +5,7 @@ import { Table } from '../table';
 import { toModel } from '../model';
 import { ExpressionContext } from '../expression/expression';
 import { pickKeys } from '../util/objectUtils';
-import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
-import { GetItemInput as AWSGetItemInput, GetItemCommand } from '@aws-sdk/client-dynamodb';
+import { DynamoDBDocumentClient, GetCommand, GetCommandInput } from '@aws-sdk/lib-dynamodb';
 
 export class GetRequest {
   private table: Table;
@@ -38,7 +37,7 @@ export class GetRequest {
   }
 
   private sendRequest() {
-    const awsParams: AWSGetItemInput = {
+    const awsParams: GetCommandInput = {
       ConsistentRead: this.consistentRead,
       ExpressionAttributeNames: this.attributes.names,
       Key: this.key,
@@ -46,8 +45,7 @@ export class GetRequest {
       ReturnConsumedCapacity: this.returnConsumedCapacity,
       TableName: this.table.getName(this.stage),
     };
-    const command = new GetItemCommand(awsParams);
-    return this.documentClient.send(command);
+    return this.documentClient.send(new GetCommand(awsParams));
   }
 
   private buildExpressionContext(attributes: AttributeExpressions, table: Table): ExpressionContext {

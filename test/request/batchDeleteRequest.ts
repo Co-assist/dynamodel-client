@@ -4,7 +4,7 @@ import { BatchDeleteRequest } from '../../src/request/batchDeleteRequest';
 import { documentClient } from '../testUtils';
 import { fakeTable, FakeAModel, FakeBModel } from './utils';
 import * as Dynamodel from '../../src';
-import { BatchWriteItemCommand } from '@aws-sdk/client-dynamodb';
+import { BatchWriteCommand, BatchWriteCommandInput } from '@aws-sdk/lib-dynamodb';
 
 describe('#batchDeleteRequest', function () {
     beforeEach(() => {
@@ -42,7 +42,7 @@ describe('#batchDeleteRequest', function () {
                 returnConsumedCapacity: 'TOTAL',
                 returnItemCollectionMetrics: 'SIZE'
             };
-            const expectedAwsParams = {
+            const expectedAwsParams: BatchWriteCommandInput = {
                 RequestItems: {
                     'dev-fake': [
                         {
@@ -74,7 +74,7 @@ describe('#batchDeleteRequest', function () {
                 ReturnConsumedCapacity: 'TOTAL',
                 ReturnItemCollectionMetrics: 'SIZE'
             };
-            dynamoDBMock.on(BatchWriteItemCommand).resolves({})
+            dynamoDBMock.on(BatchWriteCommand).resolves({})
             const request = new BatchDeleteRequest(documentClient, params, 'dev');
             await request.execute();
             const dynamodDBSendStub = dynamoDBMock.send;
@@ -89,11 +89,11 @@ describe('#batchDeleteRequest', function () {
                     type: 'a'
                 }
             }
-            const params = {
+            const params: Dynamodel.BatchDeleteInput = {
                 table: fakeTable,
                 keys: keys
             };
-            dynamoDBMock.on(BatchWriteItemCommand).resolves({})
+            dynamoDBMock.on(BatchWriteCommand).resolves({})
             const awsRequestStub = dynamoDBMock.send;
             const request = new BatchDeleteRequest(documentClient, params, 'dev');
             await request.execute();

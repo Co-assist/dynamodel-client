@@ -4,7 +4,7 @@ import { BatchPutRequest } from '../../src/request/batchPutRequest';
 import { documentClient } from '../testUtils';
 import { fakeTable, FakeAModel, FakeBModel } from './utils';
 import * as Dynamodel from '../../src';
-import { BatchWriteItemCommand } from '@aws-sdk/client-dynamodb';
+import { BatchWriteCommand, BatchWriteCommandInput } from '@aws-sdk/lib-dynamodb';
 
 describe('#batchPutRequest', function () {
     beforeEach(() => {
@@ -42,7 +42,7 @@ describe('#batchPutRequest', function () {
                 returnConsumedCapacity: 'TOTAL',
                 returnItemCollectionMetrics: 'SIZE'
             };
-            const expectedAwsParams = {
+            const expectedAwsParams: BatchWriteCommandInput = {
                 RequestItems: {
                     'dev-fake': [
                         {
@@ -77,7 +77,7 @@ describe('#batchPutRequest', function () {
                 ReturnConsumedCapacity: 'TOTAL',
                 ReturnItemCollectionMetrics: 'SIZE'
             };
-            dynamoDBMock.on(BatchWriteItemCommand).resolves({});
+            dynamoDBMock.on(BatchWriteCommand).resolves({});
             const awsRequestStub = dynamoDBMock.send;
             const request = new BatchPutRequest(documentClient, params, 'dev');
             await request.execute();
@@ -93,11 +93,11 @@ describe('#batchPutRequest', function () {
                     value: 5
                 }
             }
-            const params = {
+            const params: Dynamodel.BatchPutInput = {
                 table: fakeTable,
                 items: items
             };
-            dynamoDBMock.on(BatchWriteItemCommand).resolves({});
+            dynamoDBMock.on(BatchWriteCommand).resolves({});
             const awsRequestStub = dynamoDBMock.send;
             const request = new BatchPutRequest(documentClient, params, 'dev');
             await request.execute();

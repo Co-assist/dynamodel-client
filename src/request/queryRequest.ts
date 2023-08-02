@@ -6,8 +6,7 @@ import { mergeQueryConsumedCapacities } from '../util/dynamoOutputUtils';
 import { Table } from '../table';
 import { toModel, Model } from '../model';
 import { ExpressionContext } from '../expression/expression';
-import { QueryCommand, QueryInput as AWSQueryInput, QueryOutput as AWSQueryOutput } from '@aws-sdk/client-dynamodb';
-import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
+import { DynamoDBDocumentClient, QueryCommand, QueryCommandInput, QueryCommandOutput } from '@aws-sdk/lib-dynamodb';
 
 export class QueryRequest {
   private table: Table;
@@ -67,8 +66,8 @@ export class QueryRequest {
     };
   }
 
-  private sendRequest(exclusiveStartKey: AWSQueryInput['ExclusiveStartKey'] | undefined, limit: number) {
-    const awsParams: AWSQueryInput = {
+  private sendRequest(exclusiveStartKey: QueryCommandInput['ExclusiveStartKey'] | undefined, limit: number) {
+    const awsParams: QueryCommandInput = {
       ConsistentRead: this.consistentRead,
       ExclusiveStartKey: exclusiveStartKey,
       ExpressionAttributeNames: this.attributes.names,
@@ -83,15 +82,14 @@ export class QueryRequest {
       ScanIndexForward: this.scanIndexForward,
       TableName: this.table.getName(this.stage),
     };
-    const command = new QueryCommand(awsParams);
-    return this.documentClient.send(command)
+    return this.documentClient.send(new QueryCommand(awsParams))
   }
 
   private getLimit(scannedCount: number) {
     return Math.min(this.pageSize, this.scanCountLimit - scannedCount);
   }
 
-  private buildModelsFromResponses(responses: AWSQueryOutput[]): Model[] {
+  private buildModelsFromResponses(responses: QueryCommandOutput[]): Model[] {
     const items = flatArray(responses.map((response) => response.Items ?? []));
     return items.map((item) => toModel(item, this.table));
   }

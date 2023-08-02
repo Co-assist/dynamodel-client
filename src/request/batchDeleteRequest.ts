@@ -12,8 +12,7 @@ import {
 } from '../util/dynamoOutputUtils';
 import { pickKeys, splitArray } from '../util/objectUtils';
 import { Table } from '../table';
-import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
-import { BatchWriteItemCommand, BatchWriteItemInput as AWSBatchWriteItemInput } from '@aws-sdk/client-dynamodb';
+import { BatchWriteCommand, BatchWriteCommandInput, DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 export const BATCH_DELETE_LIMIT = 25;
 
 export class BatchDeleteRequest {
@@ -47,7 +46,7 @@ export class BatchDeleteRequest {
 
   private sendRequest(keys: AttributeMap[]) {
     const tableName = this.table.getName(this.stage);
-    const awsParams: AWSBatchWriteItemInput = {
+    const awsParams: BatchWriteCommandInput = {
       RequestItems: {
         [tableName]: keys.map((key) => ({
           DeleteRequest: {
@@ -58,7 +57,6 @@ export class BatchDeleteRequest {
       ReturnConsumedCapacity: this.returnConsumedCapacity,
       ReturnItemCollectionMetrics: this.returnItemCollectionMetrics,
     };
-    const command = new BatchWriteItemCommand(awsParams);
-    return this.documentClient.send(command);
+    return this.documentClient.send(new BatchWriteCommand(awsParams));
   }
 }

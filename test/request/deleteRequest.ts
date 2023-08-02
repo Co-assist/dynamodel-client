@@ -6,7 +6,7 @@ import { fakeTable } from './utils';
 import { equals } from '../../src/expression/conditionExpression';
 import { sortKey, value } from '../../src/expression/expression';
 import * as Dynamodel from '../../src';
-import { DeleteItemCommand, DeleteItemCommandOutput } from '@aws-sdk/client-dynamodb';
+import { DeleteCommand, DeleteCommandInput } from '@aws-sdk/lib-dynamodb';
 
 describe('#deleteRequest', function () {
     beforeEach(() => {
@@ -17,7 +17,7 @@ describe('#deleteRequest', function () {
             expect(DeleteRequest).to.be.a('function');
         });
         it('should be instanciable', function () {
-            const params = {
+            const params: Dynamodel.DeleteInput = {
                 table: fakeTable,
                 key: {}
             };
@@ -41,7 +41,7 @@ describe('#deleteRequest', function () {
                 returnValues: 'ALL_OLD',
                 table: fakeTable
             };
-            const expectedAwsParams = {
+            const expectedAwsParams: DeleteCommandInput = {
                 ConditionExpression: '#n0 = :v0',
                 ExpressionAttributeNames: {
                     '#n0': 'type'
@@ -58,7 +58,7 @@ describe('#deleteRequest', function () {
                 ReturnValues: 'ALL_OLD',
                 TableName: 'dev-fake'
             };
-            dynamoDBMock.on(DeleteItemCommand).resolves(<DeleteItemCommandOutput><unknown>{ Attributes: { id: 1, type: 'b' } });
+            dynamoDBMock.on(DeleteCommand).resolves({ Attributes: { id: 1, type: 'b' } });
             const awsRequestStub = dynamoDBMock.send;
             const request = new DeleteRequest(documentClient, params, 'dev');
             await request.execute();

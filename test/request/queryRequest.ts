@@ -6,7 +6,7 @@ import { fakeTable } from './utils';
 import { path, value, sortKey } from '../../src/expression/expression';
 import { attributeType, equals } from '../../src/expression/conditionExpression';
 import * as Dynamodel from '../../src';
-import { QueryCommand, QueryCommandOutput } from '@aws-sdk/client-dynamodb';
+import { QueryCommand, QueryCommandInput } from '@aws-sdk/lib-dynamodb';
 
 
 describe('#queryRequest', function () {
@@ -18,7 +18,7 @@ describe('#queryRequest', function () {
             expect(QueryRequest).to.be.a('function');
         });
         it('should be instanciable', function () {
-            const params = {
+            const params: Dynamodel.QueryInput = {
                 table: fakeTable
             };
             const request = new QueryRequest(documentClient, params, 'test');
@@ -47,7 +47,7 @@ describe('#queryRequest', function () {
                 select: 'ALL_PROJECTED_ATTRIBUTES',
                 table: fakeTable,
             };
-            const expectedAwsParams = {
+            const expectedAwsParams: QueryCommandInput = {
                 ConsistentRead: true,
                 ExclusiveStartKey: {
                     'id': 1,
@@ -97,7 +97,7 @@ describe('#queryRequest', function () {
                 select: 'ALL_PROJECTED_ATTRIBUTES',
                 table: fakeTable,
             };
-            const expectedAwsParams = {
+            const expectedAwsParams: QueryCommandInput = {
                 ConsistentRead: true,
                 ExclusiveStartKey: {
                     'id': 1,
@@ -122,7 +122,7 @@ describe('#queryRequest', function () {
                 Select: 'ALL_PROJECTED_ATTRIBUTES',
                 TableName: 'dev-fake'
             };
-            dynamoDBMock.on(QueryCommand).resolves(<QueryCommandOutput><unknown>{ Count: 5, ScannedCount: 5, LastEvaluatedKey: { "blip": 1 }, Items: [{ id: 2, type: 'a' }, { id: 2, type: 'a' }] })
+            dynamoDBMock.on(QueryCommand).resolves({ Count: 5, ScannedCount: 5, LastEvaluatedKey: { "blip": 1 }, Items: [{ id: 2, type: 'a' }, { id: 2, type: 'a' }] })
             const awsRequestStub = dynamoDBMock.send;
             const request = new QueryRequest(documentClient, params, 'dev');
             await request.execute();

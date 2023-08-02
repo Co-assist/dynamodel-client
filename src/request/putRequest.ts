@@ -11,8 +11,7 @@ import { ModelConstructor, isModel } from '../model';
 import { Table } from '../table';
 import { getSafeSchema } from '../schema';
 import { ExpressionContext } from '../expression/expression';
-import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
-import { PutItemInput as AWSPutItemInput, PutItemCommand } from '@aws-sdk/client-dynamodb';
+import { DynamoDBDocumentClient, PutCommand, PutCommandInput } from '@aws-sdk/lib-dynamodb';
 
 export class PutRequest {
   private table: Table;
@@ -54,7 +53,7 @@ export class PutRequest {
   }
 
   private sendRequest() {
-    const awsParams: AWSPutItemInput = {
+    const awsParams: PutCommandInput = {
       ConditionExpression: this.conditionExpression,
       ExpressionAttributeNames: this.attributes.names,
       ExpressionAttributeValues: this.attributes.values,
@@ -64,8 +63,7 @@ export class PutRequest {
       ReturnItemCollectionMetrics: this.returnItemCollectionMetrics,
       TableName: this.table.getName(this.stage),
     };
-    const command = new PutItemCommand(awsParams);
-    return this.documentClient.send(command);
+    return this.documentClient.send(new PutCommand(awsParams));
   }
 
   private buildExpressionContext(attributes: AttributeExpressions, table: Table): ExpressionContext {

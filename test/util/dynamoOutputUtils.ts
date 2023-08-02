@@ -1,7 +1,8 @@
 import { expect } from 'chai';
 import * as Dynamodel from '../../src';
 import { mergeItemCollectionMetrics, mergeBatchDeleteUnprocessedKeys, mergeBatchGetUnprocessedKeys, mergeBatchPutUnprocessedItems } from '../../src/util/dynamoOutputUtils';
-import { BatchWriteItemOutput, ItemCollectionMetrics } from '@aws-sdk/client-dynamodb';
+import { BatchGetCommandOutput, BatchWriteCommandOutput } from '@aws-sdk/lib-dynamodb';
+import { ItemCollectionMetrics } from '@aws-sdk/client-dynamodb';
 
 describe('#dynamoOutputUtils', function () {
     describe('#mergeItemCollectionMetrics', function () {
@@ -15,15 +16,16 @@ describe('#dynamoOutputUtils', function () {
                     SizeEstimateRangeGB: [1, 3]
                 };
             }
-            function fakeResponse(): BatchWriteItemOutput {
+            function fakeResponse(): BatchWriteCommandOutput {
                 return {
                     ItemCollectionMetrics: {
                         table1: [fakeItemCollectionMetric()],
                         table2: [fakeItemCollectionMetric()]
-                    }
+                    },
+                    $metadata: {}
                 };
             }
-            const responses: BatchWriteItemOutput[] = [
+            const responses: BatchWriteCommandOutput[] = [
                 fakeResponse(),
                 fakeResponse()
             ];
@@ -46,7 +48,7 @@ describe('#dynamoOutputUtils', function () {
             expect(mergeBatchDeleteUnprocessedKeys).to.be.a('function');
         });
         it('should merge batch delete unprocesses keys', function () {
-            function fakeResponse() {
+            function fakeResponse(): BatchWriteCommandOutput {
                 return {
                     UnprocessedItems: {
                         table1: [
@@ -61,9 +63,9 @@ describe('#dynamoOutputUtils', function () {
                     },
                     // @ts-ignore
                     $response: {}
-                } as unknown as BatchWriteItemOutput;
+                };
             };
-            const responses: BatchWriteItemOutput[] = [
+            const responses: BatchWriteCommandOutput[] = [
                 fakeResponse(),
                 fakeResponse()
             ];
@@ -84,7 +86,7 @@ describe('#dynamoOutputUtils', function () {
             expect(mergeBatchGetUnprocessedKeys).to.be.a('function');
         });
         it('should merge batch get unprocesses keys', function () {
-            function fakeResponse() {
+            function fakeResponse(): BatchGetCommandOutput {
                 return {
                     UnprocessedKeys: {
                         table1: {
@@ -97,9 +99,9 @@ describe('#dynamoOutputUtils', function () {
                     },
                     // @ts-ignore
                     $response: {}
-                } as unknown as BatchWriteItemOutput;
+                };
             };
-            const responses: BatchWriteItemOutput[] = [
+            const responses: BatchGetCommandOutput[] = [
                 fakeResponse(),
                 fakeResponse()
             ];
@@ -120,7 +122,7 @@ describe('#dynamoOutputUtils', function () {
             expect(mergeBatchPutUnprocessedItems).to.be.a('function');
         });
         it('should merge batch put unprocesses keys', function () {
-            function fakeResponse() {
+            function fakeResponse(): BatchWriteCommandOutput {
                 return {
                     UnprocessedItems: {
                         table1: [
@@ -135,9 +137,9 @@ describe('#dynamoOutputUtils', function () {
                     },
                     // @ts-ignore
                     $response: {}
-                } as unknown as BatchWriteItemOutput;
+                };
             };
-            const responses: BatchWriteItemOutput[] = [
+            const responses: BatchWriteCommandOutput[] = [
                 fakeResponse(),
                 fakeResponse()
             ];

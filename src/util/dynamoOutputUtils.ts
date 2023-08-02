@@ -1,17 +1,11 @@
 // TODO: Unit tests
+import { BatchGetCommandOutput, BatchWriteCommandOutput, QueryCommandOutput, ScanCommandOutput } from '@aws-sdk/lib-dynamodb';
 import { flatArray, isDefine, sum } from './objectUtils';
-import {
-  BatchWriteItemOutput as AWSBatchWriteItemOutput,
-  BatchGetItemOutput as AWSBatchGetItemOutput,
-  QueryOutput as AWSQueryOutput,
-  ScanOutput as AWSScanOutput,
-  Capacity as AWSCapacity,
-  ConsumedCapacity as AWSConsumedCapacity
-} from '@aws-sdk/client-dynamodb';
+import { Capacity, ConsumedCapacity } from '@aws-sdk/client-dynamodb';
 
 /* istanbul ignore next */
 export function mergeItemCollectionMetrics(
-  responses: AWSBatchWriteItemOutput[],
+  responses: BatchWriteCommandOutput[],
   tableName: string,
 ) {
   return flatArray(responses.map((response) => response.ItemCollectionMetrics?.[tableName]).filter(isDefine));
@@ -19,7 +13,7 @@ export function mergeItemCollectionMetrics(
 
 /* istanbul ignore next */
 export function mergeBatchDeleteUnprocessedKeys(
-  responses: AWSBatchWriteItemOutput[],
+  responses: BatchWriteCommandOutput[],
   tableName: string,
 ) {
   const writeRequestsList = flatArray(
@@ -30,7 +24,7 @@ export function mergeBatchDeleteUnprocessedKeys(
 
 /* istanbul ignore next */
 export function mergeBatchGetUnprocessedKeys(
-  responses: AWSBatchGetItemOutput[],
+  responses: BatchGetCommandOutput[],
   tableName: string,
 ) {
   return flatArray(responses.map((response) => response.UnprocessedKeys?.[tableName]?.Keys).filter(isDefine));
@@ -38,7 +32,7 @@ export function mergeBatchGetUnprocessedKeys(
 
 /* istanbul ignore next */
 export function mergeBatchPutUnprocessedItems(
-  responses: AWSBatchWriteItemOutput[],
+  responses: BatchWriteCommandOutput[],
   tableName: string,
 ) {
   const writeRequestsList = flatArray(
@@ -49,7 +43,7 @@ export function mergeBatchPutUnprocessedItems(
 
 /* istanbul ignore next */
 export function mergeBatchGetConsumedCapacities(
-  responses: AWSBatchGetItemOutput[],
+  responses: BatchGetCommandOutput[],
   tableName: string,
 ) {
   const consumedCapacities = flatArray(responses.map((response) => response.ConsumedCapacity).filter(isDefine));
@@ -58,7 +52,7 @@ export function mergeBatchGetConsumedCapacities(
 
 /* istanbul ignore next */
 export function mergeBatchWriteConsumedCapacities(
-  responses: AWSBatchWriteItemOutput[],
+  responses: BatchWriteCommandOutput[],
   tableName: string,
 ) {
   const consumedCapacitiesMixed = flatArray(responses.map((response) => response.ConsumedCapacity).filter(isDefine));
@@ -70,7 +64,7 @@ export function mergeBatchWriteConsumedCapacities(
 
 /* istanbul ignore next */
 export function mergeQueryConsumedCapacities(
-  responses: AWSQueryOutput[],
+  responses: QueryCommandOutput[],
   tableName: string,
 ) {
   const consumedCapacities = responses.map((response) => response.ConsumedCapacity).filter(isDefine);
@@ -79,7 +73,7 @@ export function mergeQueryConsumedCapacities(
 
 /* istanbul ignore next */
 export function mergeScanConsumedCapacities(
-  responses: AWSScanOutput[],
+  responses: ScanCommandOutput[],
   tableName: string,
 ) {
   const consumedCapacities = responses.map((response) => response.ConsumedCapacity).filter(isDefine);
@@ -88,10 +82,10 @@ export function mergeScanConsumedCapacities(
 
 /* istanbul ignore next */
 export function mergeConsumedCapacities(
-  consumedCapacities: AWSConsumedCapacity[],
+  consumedCapacities: ConsumedCapacity[],
   tableName: string,
 ) {
-  const consumedCapacity: AWSConsumedCapacity = {
+  const consumedCapacity: ConsumedCapacity = {
     TableName: tableName,
     CapacityUnits: sum(consumedCapacities.map((consumedCapacity) => consumedCapacity.CapacityUnits).filter(isDefine)),
     ReadCapacityUnits: sum(
@@ -108,14 +102,14 @@ export function mergeConsumedCapacities(
 }
 
 /* istanbul ignore next */
-export function mergeConsumedCapacityTable(consumedCapacities: AWSConsumedCapacity[]) {
+export function mergeConsumedCapacityTable(consumedCapacities: ConsumedCapacity[]) {
   const tableCapacities = consumedCapacities.map((consumedCapacity) => consumedCapacity.Table).filter(isDefine);
   return tableCapacities.length === 0 ? undefined : mergeTableCapacity(tableCapacities);
 }
 
 /* istanbul ignore next */
-export function mergeTableCapacity(tableCapacities: AWSCapacity[]) {
-  const table: AWSCapacity = {
+export function mergeTableCapacity(tableCapacities: Capacity[]) {
+  const table: Capacity = {
     CapacityUnits: sum(tableCapacities.map((table) => table.CapacityUnits).filter(isDefine)),
     ReadCapacityUnits: sum(tableCapacities.map((table) => table.ReadCapacityUnits).filter(isDefine)),
     WriteCapacityUnits: sum(tableCapacities.map((table) => table.WriteCapacityUnits).filter(isDefine)),
@@ -124,7 +118,7 @@ export function mergeTableCapacity(tableCapacities: AWSCapacity[]) {
 }
 
 /* istanbul ignore next */
-export function mergeGlobalSecondaryIndexes(consumedCapacities: AWSConsumedCapacity[]) {
+export function mergeGlobalSecondaryIndexes(consumedCapacities: ConsumedCapacity[]) {
   const indexesList = consumedCapacities
     .map((consumedCapacity) => consumedCapacity.GlobalSecondaryIndexes)
     .filter(isDefine);
@@ -132,7 +126,7 @@ export function mergeGlobalSecondaryIndexes(consumedCapacities: AWSConsumedCapac
 }
 
 /* istanbul ignore next */
-export function mergeLocalSecondaryIndexes(consumedCapacities: AWSConsumedCapacity[]) {
+export function mergeLocalSecondaryIndexes(consumedCapacities: ConsumedCapacity[]) {
   const indexesList = consumedCapacities
     .map((consumedCapacity) => consumedCapacity.LocalSecondaryIndexes)
     .filter(isDefine);
@@ -140,8 +134,8 @@ export function mergeLocalSecondaryIndexes(consumedCapacities: AWSConsumedCapaci
 }
 
 /* istanbul ignore next */
-export function mergeSecondaryIndexes(indexesList: AWSConsumedCapacity[]): Record<string, AWSCapacity> {
-  const newIndexes: Record<string, AWSCapacity> = {};
+export function mergeSecondaryIndexes(indexesList: ConsumedCapacity[]): Record<string, Capacity> {
+  const newIndexes: Record<string, Capacity> = {};
   indexesList.forEach((indexes) => {
     Object.keys(indexes).forEach((key) => {
       const index = indexes[key];

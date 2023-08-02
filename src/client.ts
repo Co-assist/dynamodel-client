@@ -12,8 +12,8 @@ import { Projection } from './expression/projectionExpression';
 import { ConditionExpression } from './expression/conditionExpression';
 import { Table } from './table';
 import { Model } from './model';
-import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
-import { BatchGetItemOutput, BatchWriteItemOutput, ConsumedCapacity, DeleteItemOutput, GetItemOutput, ItemCollectionMetrics, PutItemOutput, UpdateItemOutput } from '@aws-sdk/client-dynamodb';
+import { BatchGetCommandOutput, BatchWriteCommandOutput, DeleteCommandOutput, DynamoDBDocumentClient, GetCommandOutput, PutCommandOutput, UpdateCommandOutput } from '@aws-sdk/lib-dynamodb';
+import { ConsumedCapacity, ItemCollectionMetrics } from '@aws-sdk/client-dynamodb';
 
 export class Dynamodel {
   constructor(private documentClient: DynamoDBDocumentClient, private stage: string) { }
@@ -65,7 +65,7 @@ export interface BatchDeleteInput {
 export interface BatchDeleteOutput {
   consumedCapacity?: ConsumedCapacity;
   itemCollectionMetrics?: ItemCollectionMetrics[];
-  responses: BatchWriteItemOutput[];
+  responses: BatchWriteCommandOutput[];
   unprocessedKeys: AttributeMap;
 }
 
@@ -80,7 +80,7 @@ export interface BatchGetInput {
 export interface BatchGetOutput {
   consumedCapacity?: ConsumedCapacity;
   models: Model[];
-  responses: BatchGetItemOutput[];
+  responses: BatchGetCommandOutput[];
   unprocessedKeys: AttributeMap;
 }
 
@@ -94,7 +94,7 @@ export interface BatchPutInput {
 export interface BatchPutOutput {
   consumedCapacity?: ConsumedCapacity;
   itemCollectionMetrics?: ItemCollectionMetrics[];
-  responses: BatchWriteItemOutput[];
+  responses: BatchWriteCommandOutput[];
   unprocessedItems: AttributeMap;
 }
 
@@ -111,7 +111,7 @@ export interface DeleteOutput {
   consumedCapacity?: ConsumedCapacity;
   itemCollectionMetrics?: ItemCollectionMetrics;
   model?: Model;
-  response: DeleteItemOutput;
+  response: DeleteCommandOutput;
 }
 
 export interface GetInput {
@@ -125,7 +125,7 @@ export interface GetInput {
 export interface GetOutput {
   consumedCapacity?: ConsumedCapacity;
   model?: Model;
-  response: GetItemOutput;
+  response: GetCommandOutput;
 }
 
 export interface PutInput {
@@ -141,7 +141,7 @@ export interface PutOutput {
   consumedCapacity?: ConsumedCapacity;
   itemCollectionMetrics?: ItemCollectionMetrics;
   model?: Model;
-  response: PutItemOutput;
+  response: PutCommandOutput;
 }
 
 export interface QueryInput {
@@ -219,7 +219,7 @@ export interface UpdateOutput {
   consumedCapacity?: ConsumedCapacity;
   itemCollectionMetrics?: ItemCollectionMetrics;
   model?: Model;
-  response: UpdateItemOutput;
+  response: UpdateCommandOutput;
 }
 
 export type AttributeMap = {

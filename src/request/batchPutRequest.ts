@@ -14,8 +14,7 @@ import {
 import { Model, isModel } from '../model';
 import { Table } from '../table';
 import { getSafeSchema } from '../schema';
-import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
-import { BatchWriteItemCommand, BatchWriteItemInput as AWSBatchWriteItemInput } from '@aws-sdk/client-dynamodb';
+import { BatchWriteCommand, BatchWriteCommandInput, DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 export const BATCH_PUT_LIMIT = 25;
 
 export class BatchPutRequest {
@@ -61,7 +60,7 @@ export class BatchPutRequest {
 
   private sendRequest(items: AttributeMap[]) {
     const tableName = this.table.getName(this.stage);
-    const awsParams: AWSBatchWriteItemInput = {
+    const awsParams: BatchWriteCommandInput = {
       RequestItems: {
         [tableName]: items.map((item) => ({
           PutRequest: {
@@ -72,7 +71,6 @@ export class BatchPutRequest {
       ReturnConsumedCapacity: this.returnConsumedCapacity,
       ReturnItemCollectionMetrics: this.returnItemCollectionMetrics,
     };
-    const command = new BatchWriteItemCommand(awsParams);
-    return this.documentClient.send(command);
+    return this.documentClient.send(new BatchWriteCommand(awsParams));
   }
 }

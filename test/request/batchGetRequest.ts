@@ -5,7 +5,7 @@ import { documentClient } from '../testUtils';
 import { fakeTable, FakeAModel, FakeBModel } from './utils';
 import { path } from '../../src/expression/expression';
 import * as Dynamodel from '../../src';
-import { BatchGetItemCommand, BatchGetItemCommandOutput } from '@aws-sdk/client-dynamodb';
+import { BatchGetCommand } from '@aws-sdk/lib-dynamodb';
 
 describe('#batchGetRequest', function () {
     beforeEach(() => {
@@ -71,7 +71,7 @@ describe('#batchGetRequest', function () {
                 },
                 ReturnConsumedCapacity: 'TOTAL'
             };
-            dynamoDBMock.on(BatchGetItemCommand).resolves({});
+            dynamoDBMock.on(BatchGetCommand).resolves({});
             const awsRequestStub = dynamoDBMock.send;
             const request = new BatchGetRequest(documentClient, params, 'dev');
             await request.execute();
@@ -87,12 +87,11 @@ describe('#batchGetRequest', function () {
                     value: 5
                 }
             }
-            const params = {
+            const params: Dynamodel.BatchGetInput = {
                 table: fakeTable,
                 keys: keys
             };
-            //CommandResponse<BatchGetItemCommandOutput>
-            dynamoDBMock.on(BatchGetItemCommand).resolves(<BatchGetItemCommandOutput><unknown>{ Responses: { "dev-fake": [{ id: 1, type: 'b' }] } });
+            dynamoDBMock.on(BatchGetCommand).resolves({ Responses: { "dev-fake": [{ id: 1, type: 'b' }] } });
             const request = new BatchGetRequest(documentClient, params, 'dev');
             await request.execute();
             const awsRequestStub = dynamoDBMock.send;
