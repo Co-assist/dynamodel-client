@@ -16,10 +16,10 @@ export declare function beginsWith(path: PathExpression, substring: ValueExpress
 export declare function not(condition: NotExpression['condition']): NotExpression;
 export declare function between(value: BetweenExpression['value'], lowerBound: BetweenExpression['lowerBound'], upperBound: BetweenExpression['upperBound']): BetweenExpression;
 export declare function inList(operand: InListExpression['operand'], values: (PathExpression | ValueExpression)[]): InListExpression;
-export declare type AttributeType = 'S' | 'SS' | 'N' | 'NS' | 'B' | 'BS' | 'BOOL' | 'NULL' | 'L' | 'M';
-export declare type ConditionExpression = BooleanConditionExpression | NumberConditionExpression;
-declare type BooleanConditionExpression = ComparisonExpression | FunctionBooleanExpression | LogicalExpression | BetweenExpression | InListExpression | NotExpression;
-declare type NumberConditionExpression = FunctionNumberExpression;
+export type AttributeType = 'S' | 'SS' | 'N' | 'NS' | 'B' | 'BS' | 'BOOL' | 'NULL' | 'L' | 'M';
+export type ConditionExpression = BooleanConditionExpression | NumberConditionExpression;
+type BooleanConditionExpression = ComparisonExpression | FunctionBooleanExpression | LogicalExpression | BetweenExpression | InListExpression | NotExpression;
+type NumberConditionExpression = FunctionNumberExpression;
 declare class ComparisonExpression implements Expression {
     private operator;
     private operand1;

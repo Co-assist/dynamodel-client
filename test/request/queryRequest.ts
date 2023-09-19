@@ -1,20 +1,24 @@
 import { expect } from 'chai';
-import * as AWS from 'aws-sdk';
-import { sinonTest } from '../testUtils';
+import { dynamoDBMock, sinonTest } from '../testUtils';
 import { QueryRequest } from '../../src/request/queryRequest';
 import { documentClient } from '../testUtils';
 import { fakeTable } from './utils';
 import { path, value, sortKey } from '../../src/expression/expression';
 import { attributeType, equals } from '../../src/expression/conditionExpression';
 import * as Dynamodel from '../../src';
+import { QueryCommand, QueryCommandInput } from '@aws-sdk/lib-dynamodb';
+
 
 describe('#queryRequest', function () {
+    beforeEach(() => {
+        dynamoDBMock.reset();
+    });
     describe('#constructor', function () {
         it('should exists', function () {
             expect(QueryRequest).to.be.a('function');
         });
         it('should be instanciable', function () {
-            const params = {
+            const params: Dynamodel.QueryInput = {
                 table: fakeTable
             };
             const request = new QueryRequest(documentClient, params, 'test');
@@ -43,7 +47,7 @@ describe('#queryRequest', function () {
                 select: 'ALL_PROJECTED_ATTRIBUTES',
                 table: fakeTable,
             };
-            const expectedAwsParams: AWS.DynamoDB.DocumentClient.QueryInput = {
+            const expectedAwsParams: QueryCommandInput = {
                 ConsistentRead: true,
                 ExclusiveStartKey: {
                     'id': 1,
@@ -68,12 +72,11 @@ describe('#queryRequest', function () {
                 Select: 'ALL_PROJECTED_ATTRIBUTES',
                 TableName: 'dev-fake'
             };
-            const awsRequestStub = this.stub(AWS.DynamoDB.DocumentClient.prototype, 'query').returns({
-                promise: () => Promise.resolve({})
-            });
+            dynamoDBMock.on(QueryCommand).resolves({});
+            const awsRequestStub = dynamoDBMock.send;
             const request = new QueryRequest(documentClient, params, 'dev');
             await request.execute();
-            const awsParams = awsRequestStub.args[0][0];
+            const awsParams = awsRequestStub.args[0][0].input;
             expect(awsParams).deep.equals(expectedAwsParams);
         }));
         it('should test params conversion 2', sinonTest(async function () {
@@ -94,7 +97,7 @@ describe('#queryRequest', function () {
                 select: 'ALL_PROJECTED_ATTRIBUTES',
                 table: fakeTable,
             };
-            const expectedAwsParams: AWS.DynamoDB.DocumentClient.QueryInput = {
+            const expectedAwsParams: QueryCommandInput = {
                 ConsistentRead: true,
                 ExclusiveStartKey: {
                     'id': 1,
@@ -119,12 +122,11 @@ describe('#queryRequest', function () {
                 Select: 'ALL_PROJECTED_ATTRIBUTES',
                 TableName: 'dev-fake'
             };
-            const awsRequestStub = this.stub(AWS.DynamoDB.DocumentClient.prototype, 'query').returns({
-                promise: () => Promise.resolve({ Count: 5, ScannedCount: 5, LastEvaluatedKey: { "blip": 1 }, Items: [{ id: 2, type: 'a' }, { id: 2, type: 'a' }] })
-            });
+            dynamoDBMock.on(QueryCommand).resolves({ Count: 5, ScannedCount: 5, LastEvaluatedKey: { "blip": 1 }, Items: [{ id: 2, type: 'a' }, { id: 2, type: 'a' }] })
+            const awsRequestStub = dynamoDBMock.send;
             const request = new QueryRequest(documentClient, params, 'dev');
             await request.execute();
-            const awsParams = awsRequestStub.args[0][0];
+            const awsParams = awsRequestStub.args[0][0].input;
             expect(awsParams).deep.equals(expectedAwsParams);
         }));
     });

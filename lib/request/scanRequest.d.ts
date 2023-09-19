@@ -1,4 +1,5 @@
 import { ScanInput, ScanOutput } from '../client';
+import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 export declare class ScanRequest {
     private documentClient;
     private stage;
@@ -16,7 +17,7 @@ export declare class ScanRequest {
     private attributes;
     private projectionExpression?;
     private filterExpression?;
-    constructor(documentClient: AWS.DynamoDB.DocumentClient, params: ScanInput, stage: string);
+    constructor(documentClient: DynamoDBDocumentClient, params: ScanInput, stage: string);
     execute(): Promise<ScanOutput>;
     private sendRequest;
     private getLimit;
