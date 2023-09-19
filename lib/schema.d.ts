@@ -21,9 +21,9 @@ export declare class Schemaless<T extends AttributeMap = AttributeMap> extends S
 }
 export declare function getSchema(object: any): Schema;
 export declare function getSafeSchema(object: any): Schema;
-export declare type ModelSchema<T extends AttributeMap = AttributeMap> = {
+export type ModelSchema<T extends AttributeMap = AttributeMap> = {
     [K in keyof Required<T>]: AttributeSchema;
 };
-export declare type AttributeSchema = {
+export type AttributeSchema = {
     test: (value: any, path: (string | number)[], source: any) => boolean;
 };
