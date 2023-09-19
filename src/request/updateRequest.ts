@@ -87,7 +87,7 @@ export class UpdateRequest {
       TableName: this.table.getName(this.stage),
       UpdateExpression: this.updateExpression,
     };
-    // return this.documentClient.send(new UpdateCommand(awsParams));
+    //return this.documentClient.send(new UpdateCommand(awsParams));
     // It's a workaround due to bug from the AWS SDK v3: https://github.com/aws/aws-sdk-js-v3/issues/4155
     return this.documentClient.send(new UpdateItemCommand(awsParams));
   }
