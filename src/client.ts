@@ -12,11 +12,9 @@ import { Projection } from './expression/projectionExpression';
 import { ConditionExpression } from './expression/conditionExpression';
 import { Table } from './table';
 import { Model } from './model';
-import { BatchGetCommandOutput, BatchWriteCommandOutput, DeleteCommandOutput, DynamoDBDocumentClient, GetCommandOutput, PutCommandOutput, UpdateCommandOutput } from '@aws-sdk/lib-dynamodb';
-import { ConsumedCapacity, ItemCollectionMetrics } from '@aws-sdk/client-dynamodb';
 
 export class Dynamodel {
-  constructor(private documentClient: DynamoDBDocumentClient, private stage: string) { }
+  constructor(private documentClient: AWS.DynamoDB.DocumentClient, private stage: string) {}
 
   batchDelete(params: BatchDeleteInput): Promise<BatchDeleteOutput> {
     return new BatchDeleteRequest(this.documentClient, params, this.stage).execute();
@@ -63,9 +61,9 @@ export interface BatchDeleteInput {
 }
 
 export interface BatchDeleteOutput {
-  consumedCapacity?: ConsumedCapacity;
-  itemCollectionMetrics?: ItemCollectionMetrics[];
-  responses: BatchWriteCommandOutput[];
+  consumedCapacity?: AWS.DynamoDB.DocumentClient.ConsumedCapacity;
+  itemCollectionMetrics?: AWS.DynamoDB.DocumentClient.ItemCollectionMetrics[];
+  responses: AWS.DynamoDB.DocumentClient.BatchWriteItemOutput[];
   unprocessedKeys: AttributeMap;
 }
 
@@ -78,9 +76,9 @@ export interface BatchGetInput {
 }
 
 export interface BatchGetOutput {
-  consumedCapacity?: ConsumedCapacity;
+  consumedCapacity?: AWS.DynamoDB.DocumentClient.ConsumedCapacity;
   models: Model[];
-  responses: BatchGetCommandOutput[];
+  responses: AWS.DynamoDB.DocumentClient.BatchGetItemOutput[];
   unprocessedKeys: AttributeMap;
 }
 
@@ -92,9 +90,9 @@ export interface BatchPutInput {
 }
 
 export interface BatchPutOutput {
-  consumedCapacity?: ConsumedCapacity;
-  itemCollectionMetrics?: ItemCollectionMetrics[];
-  responses: BatchWriteCommandOutput[];
+  consumedCapacity?: AWS.DynamoDB.DocumentClient.ConsumedCapacity;
+  itemCollectionMetrics?: AWS.DynamoDB.DocumentClient.ItemCollectionMetrics[];
+  responses: AWS.DynamoDB.DocumentClient.BatchWriteItemOutput[];
   unprocessedItems: AttributeMap;
 }
 
@@ -108,10 +106,10 @@ export interface DeleteInput {
 }
 
 export interface DeleteOutput {
-  consumedCapacity?: ConsumedCapacity;
-  itemCollectionMetrics?: ItemCollectionMetrics;
+  consumedCapacity?: AWS.DynamoDB.DocumentClient.ConsumedCapacity;
+  itemCollectionMetrics?: AWS.DynamoDB.DocumentClient.ItemCollectionMetrics;
   model?: Model;
-  response: DeleteCommandOutput;
+  response: AWS.DynamoDB.DocumentClient.DeleteItemOutput;
 }
 
 export interface GetInput {
@@ -123,9 +121,9 @@ export interface GetInput {
 }
 
 export interface GetOutput {
-  consumedCapacity?: ConsumedCapacity;
+  consumedCapacity?: AWS.DynamoDB.DocumentClient.ConsumedCapacity;
   model?: Model;
-  response: GetCommandOutput;
+  response: AWS.DynamoDB.DocumentClient.GetItemOutput;
 }
 
 export interface PutInput {
@@ -138,10 +136,10 @@ export interface PutInput {
 }
 
 export interface PutOutput {
-  consumedCapacity?: ConsumedCapacity;
-  itemCollectionMetrics?: ItemCollectionMetrics;
+  consumedCapacity?: AWS.DynamoDB.DocumentClient.ConsumedCapacity;
+  itemCollectionMetrics?: AWS.DynamoDB.DocumentClient.ItemCollectionMetrics;
   model?: Model;
-  response: PutCommandOutput;
+  response: AWS.DynamoDB.DocumentClient.PutItemOutput;
 }
 
 export interface QueryInput {
@@ -161,11 +159,11 @@ export interface QueryInput {
 }
 
 export interface QueryOutput {
-  consumedCapacity?: ConsumedCapacity;
+  consumedCapacity?: AWS.DynamoDB.DocumentClient.ConsumedCapacity;
   count: number;
   models: Model[];
   lastEvaluatedKey?: AttributeMap;
-  responses: QueryOutput[];
+  responses: AWS.DynamoDB.DocumentClient.QueryOutput[];
   scannedCount: number;
 }
 
@@ -186,11 +184,11 @@ export interface ScanInput {
 }
 
 export interface ScanOutput {
-  consumedCapacity?: ConsumedCapacity;
+  consumedCapacity?: AWS.DynamoDB.DocumentClient.ConsumedCapacity;
   count: number;
   models: Model[];
   lastEvaluatedKey?: AttributeMap;
-  responses: ScanOutput[];
+  responses: AWS.DynamoDB.DocumentClient.ScanOutput[];
   scannedCount: number;
 }
 
@@ -216,10 +214,10 @@ export interface UpdateItemInput {
 }
 
 export interface UpdateOutput {
-  consumedCapacity?: ConsumedCapacity;
-  itemCollectionMetrics?: ItemCollectionMetrics;
+  consumedCapacity?: AWS.DynamoDB.DocumentClient.ConsumedCapacity;
+  itemCollectionMetrics?: AWS.DynamoDB.DocumentClient.ItemCollectionMetrics;
   model?: Model;
-  response: UpdateCommandOutput;
+  response: AWS.DynamoDB.DocumentClient.UpdateItemOutput;
 }
 
 export type AttributeMap = {

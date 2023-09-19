@@ -1,16 +1,13 @@
 import { expect } from 'chai';
-import { dynamoDBMock, sinonTest } from '../testUtils';
+import * as AWS from 'aws-sdk';
+import { sinonTest } from '../testUtils';
 import { BatchGetRequest } from '../../src/request/batchGetRequest'
 import { documentClient } from '../testUtils';
 import { fakeTable, FakeAModel, FakeBModel } from './utils';
 import { path } from '../../src/expression/expression';
 import * as Dynamodel from '../../src';
-import { BatchGetCommand } from '@aws-sdk/lib-dynamodb';
 
 describe('#batchGetRequest', function () {
-    beforeEach(() => {
-        dynamoDBMock.reset();
-    });
     describe('#constructor', function () {
         it('should exists', function () {
             expect(BatchGetRequest).to.be.a('function');
@@ -43,7 +40,7 @@ describe('#batchGetRequest', function () {
                 projection: [path('value')],
                 returnConsumedCapacity: 'TOTAL'
             };
-            const expectedAwsParams = {
+            const expectedAwsParams: AWS.DynamoDB.DocumentClient.BatchGetItemInput = {
                 RequestItems: {
                     'dev-fake': {
                         ConsistentRead: true,
@@ -71,11 +68,12 @@ describe('#batchGetRequest', function () {
                 },
                 ReturnConsumedCapacity: 'TOTAL'
             };
-            dynamoDBMock.on(BatchGetCommand).resolves({});
-            const awsRequestStub = dynamoDBMock.send;
+            const awsRequestStub = this.stub(AWS.DynamoDB.DocumentClient.prototype, 'batchGet').returns({
+                promise: () => Promise.resolve({})
+            });
             const request = new BatchGetRequest(documentClient, params, 'dev');
             await request.execute();
-            const awsParams = awsRequestStub.args[0][0].input;
+            const awsParams = awsRequestStub.args[0][0];
             expect(awsParams).deep.equals(expectedAwsParams);
         }));
         it('should send multiple request for large amount of keys', sinonTest(async function () {
@@ -87,16 +85,17 @@ describe('#batchGetRequest', function () {
                     value: 5
                 }
             }
-            const params: Dynamodel.BatchGetInput = {
+            const params = {
                 table: fakeTable,
                 keys: keys
             };
-            dynamoDBMock.on(BatchGetCommand).resolves({ Responses: { "dev-fake": [{ id: 1, type: 'b' }] } });
+            const awsRequestStub = this.stub(AWS.DynamoDB.DocumentClient.prototype, 'batchGet').returns({
+                promise: () => Promise.resolve({ Responses: { "dev-fake": [{ id: 1, type: 'b' }] } })
+            });
             const request = new BatchGetRequest(documentClient, params, 'dev');
             await request.execute();
-            const awsRequestStub = dynamoDBMock.send;
-            const awsParams = awsRequestStub.args[0][0].input;
-            expect(awsParams['RequestItems']['dev-fake'].Keys).have.lengthOf(25);
+            const awsParams = awsRequestStub.args[0][0];
+            expect(awsParams.RequestItems['dev-fake'].Keys).have.lengthOf(25);
             expect(awsRequestStub.callCount).equals(4);
         }));
     });

@@ -1,5 +1,4 @@
 import { PutInput, PutOutput } from '../client';
-import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 export declare class PutRequest {
     private documentClient;
     private stage;
@@ -11,7 +10,7 @@ export declare class PutRequest {
     private conditionExpression?;
     private ModelConstructor;
     private item;
-    constructor(documentClient: DynamoDBDocumentClient, params: PutInput, stage: string);
+    constructor(documentClient: AWS.DynamoDB.DocumentClient, params: PutInput, stage: string);
     execute(): Promise<PutOutput>;
     private sendRequest;
     private buildExpressionContext;

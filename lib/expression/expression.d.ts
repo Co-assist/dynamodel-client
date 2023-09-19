@@ -4,8 +4,8 @@ export declare function path(attribute: string, ...subAttribute: (string | numbe
 export declare function value<T>(value: T): ValueExpression;
 export declare function hashKey(): HashKeyExpression;
 export declare function sortKey(): SortKeyExpression;
-export type Path = string | (string | number)[];
-export type Value<T = any> = T;
+export declare type Path = string | (string | number)[];
+export declare type Value<T = any> = T;
 export interface Expression {
     serialize(context: ExpressionContext): string;
 }

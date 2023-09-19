@@ -1,8 +1,7 @@
+import { PromiseResult } from 'aws-sdk/lib/request';
 import { expect } from 'chai';
 import * as Dynamodel from '../../src';
 import { mergeItemCollectionMetrics, mergeBatchDeleteUnprocessedKeys, mergeBatchGetUnprocessedKeys, mergeBatchPutUnprocessedItems } from '../../src/util/dynamoOutputUtils';
-import { BatchGetCommandOutput, BatchWriteCommandOutput } from '@aws-sdk/lib-dynamodb';
-import { ItemCollectionMetrics } from '@aws-sdk/client-dynamodb';
 
 describe('#dynamoOutputUtils', function () {
     describe('#mergeItemCollectionMetrics', function () {
@@ -10,26 +9,25 @@ describe('#dynamoOutputUtils', function () {
             expect(mergeItemCollectionMetrics).to.be.a('function');
         });
         it('should merge item collection metrics', function () {
-            function fakeItemCollectionMetric(): ItemCollectionMetrics {
+            function fakeItemCollectionMetric(): AWS.DynamoDB.DocumentClient.ItemCollectionMetrics {
                 return {
                     ItemCollectionKey: {},
                     SizeEstimateRangeGB: [1, 3]
                 };
             }
-            function fakeResponse(): BatchWriteCommandOutput {
+            function fakeResponse(): AWS.DynamoDB.DocumentClient.BatchWriteItemOutput {
                 return {
                     ItemCollectionMetrics: {
                         table1: [fakeItemCollectionMetric()],
                         table2: [fakeItemCollectionMetric()]
-                    },
-                    $metadata: {}
+                    }
                 };
             }
-            const responses: BatchWriteCommandOutput[] = [
+            const responses: AWS.DynamoDB.DocumentClient.BatchWriteItemOutput[] = [
                 fakeResponse(),
                 fakeResponse()
             ];
-            const expected: ItemCollectionMetrics[] = [
+            const expected: AWS.DynamoDB.DocumentClient.ItemCollectionMetrics[] = [
                 {
                     ItemCollectionKey: {},
                     SizeEstimateRangeGB: [1, 3]
@@ -48,7 +46,7 @@ describe('#dynamoOutputUtils', function () {
             expect(mergeBatchDeleteUnprocessedKeys).to.be.a('function');
         });
         it('should merge batch delete unprocesses keys', function () {
-            function fakeResponse(): BatchWriteCommandOutput {
+            function fakeResponse(): PromiseResult<AWS.DynamoDB.DocumentClient.BatchWriteItemOutput, AWS.AWSError> {
                 return {
                     UnprocessedItems: {
                         table1: [
@@ -65,7 +63,7 @@ describe('#dynamoOutputUtils', function () {
                     $response: {}
                 };
             };
-            const responses: BatchWriteCommandOutput[] = [
+            const responses: PromiseResult<AWS.DynamoDB.DocumentClient.BatchWriteItemOutput, AWS.AWSError>[] = [
                 fakeResponse(),
                 fakeResponse()
             ];
@@ -86,7 +84,7 @@ describe('#dynamoOutputUtils', function () {
             expect(mergeBatchGetUnprocessedKeys).to.be.a('function');
         });
         it('should merge batch get unprocesses keys', function () {
-            function fakeResponse(): BatchGetCommandOutput {
+            function fakeResponse(): PromiseResult<AWS.DynamoDB.DocumentClient.BatchWriteItemOutput, AWS.AWSError>  {
                 return {
                     UnprocessedKeys: {
                         table1: {
@@ -99,9 +97,9 @@ describe('#dynamoOutputUtils', function () {
                     },
                     // @ts-ignore
                     $response: {}
-                };
+                }
             };
-            const responses: BatchGetCommandOutput[] = [
+            const responses:  PromiseResult<AWS.DynamoDB.DocumentClient.BatchWriteItemOutput, AWS.AWSError>[] = [
                 fakeResponse(),
                 fakeResponse()
             ];
@@ -122,7 +120,7 @@ describe('#dynamoOutputUtils', function () {
             expect(mergeBatchPutUnprocessedItems).to.be.a('function');
         });
         it('should merge batch put unprocesses keys', function () {
-            function fakeResponse(): BatchWriteCommandOutput {
+            function fakeResponse(): PromiseResult<AWS.DynamoDB.DocumentClient.BatchWriteItemOutput, AWS.AWSError> {
                 return {
                     UnprocessedItems: {
                         table1: [
@@ -137,9 +135,9 @@ describe('#dynamoOutputUtils', function () {
                     },
                     // @ts-ignore
                     $response: {}
-                };
+                }
             };
-            const responses: BatchWriteCommandOutput[] = [
+            const responses: PromiseResult<AWS.DynamoDB.DocumentClient.BatchWriteItemOutput, AWS.AWSError>[] = [
                 fakeResponse(),
                 fakeResponse()
             ];

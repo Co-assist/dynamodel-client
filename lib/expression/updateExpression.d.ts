@@ -1,9 +1,9 @@
 import { Expression, PathExpression, ValueExpression, FunctionExpression, ExpressionContext } from './expression';
-export type UpdateExpression = BinaryOperationExpression | IfNotExistsExpression | ListAppendExpression;
-export type AddExpression = ValueExpression<Set<any> | number> | UpdateExpression;
-export type DeleteExpression = ValueExpression<Set<any>> | UpdateExpression;
-export type RemoveExpression = PathExpression;
-export type SetExpression = ValueExpression<any> | UpdateExpression;
+export declare type UpdateExpression = BinaryOperationExpression | IfNotExistsExpression | ListAppendExpression;
+export declare type AddExpression = ValueExpression<Set<any> | number> | UpdateExpression;
+export declare type DeleteExpression = ValueExpression<Set<any>> | UpdateExpression;
+export declare type RemoveExpression = PathExpression;
+export declare type SetExpression = ValueExpression<any> | UpdateExpression;
 export declare function ifNotExists(path: PathExpression, value: UpdateExpression | PathExpression | ValueExpression): IfNotExistsExpression;
 export declare function listAppend(list1: UpdateExpression | PathExpression | ValueExpression, list2: UpdateExpression | PathExpression | ValueExpression): ListAppendExpression;
 export declare function addition(operand1: BinaryOperationExpression['operand1'], operand2: BinaryOperationExpression['operand2']): BinaryOperationExpression;
