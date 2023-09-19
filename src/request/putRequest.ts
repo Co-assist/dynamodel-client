@@ -11,6 +11,7 @@ import { ModelConstructor, isModel } from '../model';
 import { Table } from '../table';
 import { getSafeSchema } from '../schema';
 import { ExpressionContext } from '../expression/expression';
+import { DynamoDBDocumentClient, PutCommand, PutCommandInput } from '@aws-sdk/lib-dynamodb';
 
 export class PutRequest {
   private table: Table;
@@ -22,7 +23,7 @@ export class PutRequest {
   private ModelConstructor: ModelConstructor;
   private item: AttributeMap;
 
-  constructor(private documentClient: AWS.DynamoDB.DocumentClient, params: PutInput, private stage: string) {
+  constructor(private documentClient: DynamoDBDocumentClient, params: PutInput, private stage: string) {
     this.table = params.table;
     this.returnConsumedCapacity = params.returnConsumedCapacity;
     this.returnItemCollectionMetrics = params.returnItemCollectionMetrics;
@@ -52,7 +53,7 @@ export class PutRequest {
   }
 
   private sendRequest() {
-    const awsParams: AWS.DynamoDB.DocumentClient.PutItemInput = {
+    const awsParams: PutCommandInput = {
       ConditionExpression: this.conditionExpression,
       ExpressionAttributeNames: this.attributes.names,
       ExpressionAttributeValues: this.attributes.values,
@@ -62,7 +63,7 @@ export class PutRequest {
       ReturnItemCollectionMetrics: this.returnItemCollectionMetrics,
       TableName: this.table.getName(this.stage),
     };
-    return this.documentClient.put(awsParams).promise();
+    return this.documentClient.send(new PutCommand(awsParams));
   }
 
   private buildExpressionContext(attributes: AttributeExpressions, table: Table): ExpressionContext {

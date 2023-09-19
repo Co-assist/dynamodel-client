@@ -6,6 +6,7 @@ export interface TableSchema {
   models: ModelConstructor<any>[];
   name: string;
   primaryKey: Table.Index;
+  modelKey?: Table.ModelKey;
 }
 
 export namespace Table {
@@ -16,6 +17,10 @@ export namespace Table {
   export interface Index {
     hash: string;
     sort?: string;
+  }
+
+  export interface ModelKey {
+    path: string;
   }
 }
 
@@ -39,6 +44,10 @@ export class Table {
     return this.schema.models;
   }
 
+  get modelKey(): Table.ModelKey | undefined {
+    return this.schema.modelKey;
+  }
+
   getName(stage?: string) {
     return stage ? `${stage}-${this.schema.name}` : this.schema.name;
   }
@@ -59,7 +68,10 @@ export class Table {
         throw new Error(`'${constructor.name}' is not supported in the table '${this.schema.name}', on item ${JSON.stringify(item)}`);
       }
     } else {
-      const primaryKeyNames = this.primaryKeyNames;
+      const primaryKeyNames = [...this.primaryKeyNames];
+      if (this.modelKey && item[this.modelKey.path]) {
+        primaryKeyNames.push(this.modelKey.path);
+      }
       constructor = this.constructors.find((constructor) => this.matchConstructor(item, constructor, primaryKeyNames));
       if (!constructor) {
         throw new Error(`No constructor found in the table '${this.schema.name}', on item ${JSON.stringify(item)}`);

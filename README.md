@@ -131,10 +131,15 @@ const myTable = new Table({
     models: [
         FooModel,
         BarModel
-    ]
+    ],
+    modelKey: {
+        path: 'modelKeyPath'
+    }
 });
 ```
 
+modelKey (optionnel) permet d'identifier le bon modèle à l'aide d'un attribut supplémentaire 
+(ex: les modèles d'une table sont différenciés par un autre attribut que ceux de la clé primaire).
 ## Requests
 
 Liste des opérations du client.
@@ -258,3 +263,7 @@ const response = await dbClient.update({
     )
 });
 ```
+### AWS SDK Client Mock
+[![Package used]](https://github.com/m-radzikowski/aws-sdk-client-mock#dynamodb-documentclient)
+Recommended package by aws sdk team to mock clients
+https://aws.amazon.com/fr/blogs/developer/mocking-modular-aws-sdk-for-javascript-v3-in-unit-tests/

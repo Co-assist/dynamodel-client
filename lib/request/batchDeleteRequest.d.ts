@@ -1,4 +1,5 @@
 import { BatchDeleteInput, BatchDeleteOutput } from '../client';
+import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 export declare const BATCH_DELETE_LIMIT = 25;
 export declare class BatchDeleteRequest {
     private documentClient;
@@ -7,7 +8,7 @@ export declare class BatchDeleteRequest {
     private returnConsumedCapacity?;
     private returnItemCollectionMetrics?;
     private keysList;
-    constructor(documentClient: AWS.DynamoDB.DocumentClient, params: BatchDeleteInput, stage: string);
+    constructor(documentClient: DynamoDBDocumentClient, params: BatchDeleteInput, stage: string);
     execute(): Promise<BatchDeleteOutput>;
     private sendRequest;
 }

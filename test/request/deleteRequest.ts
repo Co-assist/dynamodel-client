@@ -1,20 +1,23 @@
 import { DeleteRequest } from '../../src/request/deleteRequest';
 import { expect } from 'chai';
-import * as AWS from 'aws-sdk';
-import { sinonTest } from '../testUtils';
+import { dynamoDBMock, sinonTest } from '../testUtils';
 import { documentClient } from '../testUtils';
 import { fakeTable } from './utils';
 import { equals } from '../../src/expression/conditionExpression';
 import { sortKey, value } from '../../src/expression/expression';
 import * as Dynamodel from '../../src';
+import { DeleteCommand, DeleteCommandInput } from '@aws-sdk/lib-dynamodb';
 
 describe('#deleteRequest', function () {
+    beforeEach(() => {
+        dynamoDBMock.reset();
+    });
     describe('#constructor', function () {
         it('should exists', function () {
             expect(DeleteRequest).to.be.a('function');
         });
         it('should be instanciable', function () {
-            const params = {
+            const params: Dynamodel.DeleteInput = {
                 table: fakeTable,
                 key: {}
             };
@@ -38,7 +41,7 @@ describe('#deleteRequest', function () {
                 returnValues: 'ALL_OLD',
                 table: fakeTable
             };
-            const expectedAwsParams: AWS.DynamoDB.DocumentClient.DeleteItemInput = {
+            const expectedAwsParams: DeleteCommandInput = {
                 ConditionExpression: '#n0 = :v0',
                 ExpressionAttributeNames: {
                     '#n0': 'type'
@@ -55,12 +58,11 @@ describe('#deleteRequest', function () {
                 ReturnValues: 'ALL_OLD',
                 TableName: 'dev-fake'
             };
-            const awsRequestStub = this.stub(AWS.DynamoDB.DocumentClient.prototype, 'delete').returns({
-                promise: () => Promise.resolve({ Attributes: { id: 1, type: 'b' } })
-            });
+            dynamoDBMock.on(DeleteCommand).resolves({ Attributes: { id: 1, type: 'b' } });
+            const awsRequestStub = dynamoDBMock.send;
             const request = new DeleteRequest(documentClient, params, 'dev');
             await request.execute();
-            const awsParams = awsRequestStub.args[0][0];
+            const awsParams = awsRequestStub.args[0][0].input;
             expect(awsParams).deep.equals(expectedAwsParams);
         }));
     });

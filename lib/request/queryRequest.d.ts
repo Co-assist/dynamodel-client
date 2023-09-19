@@ -1,4 +1,5 @@
 import { QueryInput, QueryOutput } from '../client';
+import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 export declare class QueryRequest {
     private documentClient;
     private stage;
@@ -16,7 +17,7 @@ export declare class QueryRequest {
     private projectionExpression?;
     private filterExpression?;
     private keyConditionExpression?;
-    constructor(documentClient: AWS.DynamoDB.DocumentClient, params: QueryInput, stage: string);
+    constructor(documentClient: DynamoDBDocumentClient, params: QueryInput, stage: string);
     execute(): Promise<QueryOutput>;
     private sendRequest;
     private getLimit;

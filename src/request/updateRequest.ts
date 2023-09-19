@@ -14,6 +14,9 @@ import {
   UpdateOutput,
   UpdateReturnValues,
 } from '../client';
+import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
+import { UpdateItemCommand, UpdateItemCommandInput } from '@aws-sdk/client-dynamodb';
+import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
 
 export class UpdateRequest {
   private table: Table;
@@ -26,7 +29,7 @@ export class UpdateRequest {
   private updateExpression: string;
   private ModelConstructor: ModelConstructor;
 
-  constructor(private documentClient: AWS.DynamoDB.DocumentClient, params: UpdateInput, private stage: string) {
+  constructor(private documentClient: DynamoDBDocumentClient, params: UpdateInput, private stage: string) {
     this.table = params.table;
     this.returnConsumedCapacity = params.returnConsumedCapacity;
     this.returnItemCollectionMetrics = params.returnItemCollectionMetrics;
@@ -61,7 +64,7 @@ export class UpdateRequest {
 
   async execute(): Promise<UpdateOutput> {
     const response = await this.sendRequest();
-    const model = response.Attributes && new this.ModelConstructor(response.Attributes);
+    const model = response.Attributes && new this.ModelConstructor(unmarshall(response.Attributes));
     const consumedCapacity = response.ConsumedCapacity;
     const itemCollectionMetrics = response.ItemCollectionMetrics;
     return {
@@ -73,18 +76,20 @@ export class UpdateRequest {
   }
 
   private sendRequest() {
-    const awsParams: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
+    const awsParams: UpdateItemCommandInput = {
       ConditionExpression: this.conditionExpression,
       ExpressionAttributeNames: this.attributes.names,
       ExpressionAttributeValues: this.attributes.values,
-      Key: this.key,
+      Key: marshall(this.key),
       ReturnValues: this.returnValues,
       ReturnConsumedCapacity: this.returnConsumedCapacity,
       ReturnItemCollectionMetrics: this.returnItemCollectionMetrics,
       TableName: this.table.getName(this.stage),
       UpdateExpression: this.updateExpression,
     };
-    return this.documentClient.update(awsParams).promise();
+    // return this.documentClient.send(new UpdateCommand(awsParams));
+    // It's a workaround due to bug from the AWS SDK v3: https://github.com/aws/aws-sdk-js-v3/issues/4155
+    return this.documentClient.send(new UpdateItemCommand(awsParams));
   }
 
   private buildExpressionContext(attributes: AttributeExpressions, table: Table): ExpressionContext {
