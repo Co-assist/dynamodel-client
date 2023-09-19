@@ -263,7 +263,3 @@ const response = await dbClient.update({
     )
 });
 ```
-### AWS SDK Client Mock
-[![Package used]](https://github.com/m-radzikowski/aws-sdk-client-mock#dynamodb-documentclient)
-Recommended package by aws sdk team to mock clients
-https://aws.amazon.com/fr/blogs/developer/mocking-modular-aws-sdk-for-javascript-v3-in-unit-tests/

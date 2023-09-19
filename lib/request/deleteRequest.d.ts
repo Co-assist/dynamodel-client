@@ -1,5 +1,4 @@
 import { DeleteInput, DeleteOutput } from '../client';
-import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 export declare class DeleteRequest {
     private documentClient;
     private stage;
@@ -10,7 +9,7 @@ export declare class DeleteRequest {
     private attributes;
     private conditionExpression?;
     private key;
-    constructor(documentClient: DynamoDBDocumentClient, params: DeleteInput, stage: string);
+    constructor(documentClient: AWS.DynamoDB.DocumentClient, params: DeleteInput, stage: string);
     execute(): Promise<DeleteOutput>;
     private sendRequest;
     private buildExpressionContext;

@@ -1,12 +1,12 @@
-import { AttributeMap, ReturnConsumedCapacity, QueryInput, QueryOutput, Select } from '../client';
+import { AttributeMap, QueryInput, QueryOutput, ReturnConsumedCapacity, Select } from '../client';
 import { AttributeExpressions } from '../expression/attributeExpressions';
+import { PromiseResult } from 'aws-sdk/lib/request';
 import { serializeProjection } from '../expression/projectionExpression';
 import { flatArray } from '../util/objectUtils';
 import { mergeQueryConsumedCapacities } from '../util/dynamoOutputUtils';
 import { Table } from '../table';
 import { toModel, Model } from '../model';
 import { ExpressionContext } from '../expression/expression';
-import { DynamoDBDocumentClient, QueryCommand, QueryCommandInput, QueryCommandOutput } from '@aws-sdk/lib-dynamodb';
 
 export class QueryRequest {
   private table: Table;
@@ -24,7 +24,7 @@ export class QueryRequest {
   private filterExpression?: string;
   private keyConditionExpression?: string;
 
-  constructor(private documentClient: DynamoDBDocumentClient, params: QueryInput, private stage: string) {
+  constructor(private documentClient: AWS.DynamoDB.DocumentClient, params: QueryInput, private stage: string) {
     this.table = params.table;
     this.consistentRead = params.consistentRead;
     this.countLimit = params.countLimit ?? Number.MAX_SAFE_INTEGER;
@@ -43,7 +43,7 @@ export class QueryRequest {
   }
 
   async execute(): Promise<QueryOutput> {
-    const responses = [];
+    const responses: PromiseResult<AWS.DynamoDB.DocumentClient.QueryOutput, AWS.AWSError>[] = [];
     let lastEvaluatedKey = this.exclusiveStartKey;
     let count = 0;
     let scannedCount = 0;
@@ -66,8 +66,8 @@ export class QueryRequest {
     };
   }
 
-  private sendRequest(exclusiveStartKey: QueryCommandInput['ExclusiveStartKey'] | undefined, limit: number) {
-    const awsParams: QueryCommandInput = {
+  private sendRequest(exclusiveStartKey: AWS.DynamoDB.DocumentClient.Key | undefined, limit: number) {
+    const awsParams: AWS.DynamoDB.DocumentClient.QueryInput = {
       ConsistentRead: this.consistentRead,
       ExclusiveStartKey: exclusiveStartKey,
       ExpressionAttributeNames: this.attributes.names,
@@ -82,14 +82,14 @@ export class QueryRequest {
       ScanIndexForward: this.scanIndexForward,
       TableName: this.table.getName(this.stage),
     };
-    return this.documentClient.send(new QueryCommand(awsParams))
+    return this.documentClient.query(awsParams).promise();
   }
 
   private getLimit(scannedCount: number) {
     return Math.min(this.pageSize, this.scanCountLimit - scannedCount);
   }
 
-  private buildModelsFromResponses(responses: QueryCommandOutput[]): Model[] {
+  private buildModelsFromResponses(responses: AWS.DynamoDB.DocumentClient.QueryOutput[]): Model[] {
     const items = flatArray(responses.map((response) => response.Items ?? []));
     return items.map((item) => toModel(item, this.table));
   }

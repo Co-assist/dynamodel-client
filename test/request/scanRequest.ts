@@ -1,5 +1,6 @@
 import { expect } from 'chai';
-import { dynamoDBMock, sinonTest } from '../testUtils';
+import * as AWS from 'aws-sdk';
+import { sinonTest } from '../testUtils';
 import { ScanRequest } from '../../src/request/scanRequest';
 import { documentClient } from '../testUtils';
 import { fakeTable } from './utils';
@@ -7,12 +8,8 @@ import { path } from '../../src/expression/expression';
 import { attributeType } from '../../src/expression/conditionExpression';
 import { value } from '../../src/expression/expression';
 import * as Dynamodel from '../../src';
-import { ScanCommand, ScanCommandInput } from '@aws-sdk/lib-dynamodb';
 
 describe('#scanRequest', function () {
-    beforeEach(() => {
-        dynamoDBMock.reset();
-    });
     describe('#constructor', function () {
         it('should exists', function () {
             expect(ScanRequest).to.be.a('function');
@@ -47,7 +44,7 @@ describe('#scanRequest', function () {
                 table: fakeTable,
                 totalSegments: undefined,
             };
-            const expectedAwsParams: ScanCommandInput = {
+            const expectedAwsParams: AWS.DynamoDB.DocumentClient.ScanInput = {
                 ConsistentRead: true,
                 ExclusiveStartKey: {
                     'id': 1,
@@ -71,11 +68,12 @@ describe('#scanRequest', function () {
                 TableName: 'dev-fake',
                 TotalSegments: undefined
             };
-            dynamoDBMock.on(ScanCommand).resolves({ Count: 5, ScannedCount: 5, LastEvaluatedKey: { "blip": 1 }, Items: [{ id: 2, type: 'a' }, { id: 2, type: 'a' }] })
-            const awsRequestStub = dynamoDBMock.send;
+            const awsRequestStub = this.stub(AWS.DynamoDB.DocumentClient.prototype, 'scan').returns({
+                promise: () => Promise.resolve({ Count: 5, ScannedCount: 5, LastEvaluatedKey: { "blip": 1 }, Items: [{ id: 2, type: 'a' }, { id: 2, type: 'a' }] })
+            });
             const request = new ScanRequest(documentClient, params, 'dev');
             await request.execute();
-            const awsParams = awsRequestStub.args[0][0].input;
+            const awsParams = awsRequestStub.args[0][0];
             expect(awsParams).deep.equals(expectedAwsParams);
         }));
         it('should test params conversion 2', sinonTest(async function () {
@@ -96,7 +94,7 @@ describe('#scanRequest', function () {
                 table: fakeTable,
                 totalSegments: undefined,
             };
-            const expectedAwsParams: ScanCommandInput = {
+            const expectedAwsParams: AWS.DynamoDB.DocumentClient.ScanInput = {
                 ConsistentRead: true,
                 ExclusiveStartKey: {
                     'id': 1,
@@ -120,11 +118,12 @@ describe('#scanRequest', function () {
                 TableName: 'dev-fake',
                 TotalSegments: undefined
             };
-            dynamoDBMock.on(ScanCommand).resolves({})
-            const awsRequestStub = dynamoDBMock.send;
+            const awsRequestStub = this.stub(AWS.DynamoDB.DocumentClient.prototype, 'scan').returns({
+                promise: () => Promise.resolve({})
+            });
             const request = new ScanRequest(documentClient, params, 'dev');
             await request.execute();
-            const awsParams = awsRequestStub.args[0][0].input;
+            const awsParams = awsRequestStub.args[0][0];
             expect(awsParams).deep.equals(expectedAwsParams);
         }));
     });
