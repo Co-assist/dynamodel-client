@@ -14,9 +14,7 @@ import {
   UpdateOutput,
   UpdateReturnValues,
 } from '../client';
-import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
-import { UpdateItemCommand, UpdateItemCommandInput } from '@aws-sdk/client-dynamodb';
-import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
+import { DynamoDBDocumentClient, UpdateCommand, UpdateCommandInput } from '@aws-sdk/lib-dynamodb';
 
 export class UpdateRequest {
   private table: Table;
@@ -64,7 +62,7 @@ export class UpdateRequest {
 
   async execute(): Promise<UpdateOutput> {
     const response = await this.sendRequest();
-    const model = response.Attributes && new this.ModelConstructor(unmarshall(response.Attributes));
+    const model = response.Attributes && new this.ModelConstructor(response.Attributes);
     const consumedCapacity = response.ConsumedCapacity;
     const itemCollectionMetrics = response.ItemCollectionMetrics;
     return {
@@ -75,21 +73,19 @@ export class UpdateRequest {
     };
   }
 
-  private sendRequest() {
-    const awsParams: UpdateItemCommandInput = {
+  private async sendRequest() {
+    const awsParams: UpdateCommandInput = {
       ConditionExpression: this.conditionExpression,
       ExpressionAttributeNames: this.attributes.names,
       ExpressionAttributeValues: this.attributes.values,
-      Key: marshall(this.key),
+      Key: this.key,
       ReturnValues: this.returnValues,
       ReturnConsumedCapacity: this.returnConsumedCapacity,
       ReturnItemCollectionMetrics: this.returnItemCollectionMetrics,
       TableName: this.table.getName(this.stage),
       UpdateExpression: this.updateExpression,
     };
-    // return this.documentClient.send(new UpdateCommand(awsParams));
-    // It's a workaround due to bug from the AWS SDK v3: https://github.com/aws/aws-sdk-js-v3/issues/4155
-    return this.documentClient.send(new UpdateItemCommand(awsParams));
+    return this.documentClient.send(new UpdateCommand(awsParams))
   }
 
   private buildExpressionContext(attributes: AttributeExpressions, table: Table): ExpressionContext {

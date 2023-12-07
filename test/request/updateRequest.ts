@@ -8,7 +8,6 @@ import { hashKey, sortKey, path, value } from '../../src/expression/expression';
 import { Updatable } from '../../src/expression/updateExpression';
 import * as Dynamodel from '../../src';
 import { UpdateCommand, UpdateCommandInput, UpdateCommandOutput } from '@aws-sdk/lib-dynamodb';
-import { UpdateItemCommand, UpdateItemCommandInput, UpdateItemCommandOutput } from '@aws-sdk/client-dynamodb';
 
 describe('#updateRequest', function () {
     beforeEach(() => {
@@ -43,18 +42,27 @@ describe('#updateRequest', function () {
                 returnValues: 'ALL_NEW',
                 table: fakeTable
             };
-            const expectedAwsParams = {
+            const expectedAwsParams: UpdateCommandInput = {
                 ConditionExpression: '(attribute_exists(#n0) AND attribute_exists(#n1))',
-                ExpressionAttributeNames: { '#n0': 'id', '#n1': 'type', '#n2': 'value' },
-                ExpressionAttributeValues: { ':v0': 5 },
-                Key: { id: { N: '1' }, type: { S: 'a' } },
-                ReturnValues: 'ALL_NEW',
+                ExpressionAttributeNames: {
+                    '#n0': 'id',
+                    '#n1': 'type',
+                    '#n2': 'value'
+                },
+                ExpressionAttributeValues: {
+                    ':v0': 5
+                },
+                Key: {
+                    'id': 1,
+                    'type': 'a'
+                },
                 ReturnConsumedCapacity: 'TOTAL',
                 ReturnItemCollectionMetrics: 'SIZE',
+                ReturnValues: 'ALL_NEW',
                 TableName: 'dev-fake',
                 UpdateExpression: 'SET #n2 = :v0'
             };
-            dynamoDBMock.on(UpdateItemCommand).resolves({})
+            dynamoDBMock.on(UpdateCommand).resolves({})
             const awsRequestStub = dynamoDBMock.send;
             const request = new UpdateRequest(documentClient, params, 'dev');
             await request.execute();
@@ -74,18 +82,27 @@ describe('#updateRequest', function () {
                 returnValues: 'ALL_NEW',
                 table: fakeTable
             };
-            const expectedAwsParams = {
+            const expectedAwsParams: UpdateCommandInput = {
                 ConditionExpression: '(attribute_exists(#n0) AND attribute_exists(#n1))',
-                ExpressionAttributeNames: { '#n0': 'id', '#n1': 'type', '#n2': 'value' },
-                ExpressionAttributeValues: { ':v0': 5 },
-                Key: { id: { N: '1' }, type: { S: 'a' } },
-                ReturnValues: 'ALL_NEW',
+                ExpressionAttributeNames: {
+                    '#n0': 'id',
+                    '#n1': 'type',
+                    '#n2': 'value'
+                },
+                ExpressionAttributeValues: {
+                    ':v0': 5
+                },
+                Key: {
+                    'id': 1,
+                    'type': 'a'
+                },
                 ReturnConsumedCapacity: 'TOTAL',
                 ReturnItemCollectionMetrics: 'SIZE',
+                ReturnValues: 'ALL_NEW',
                 TableName: 'dev-fake',
                 UpdateExpression: 'SET #n2 = :v0'
             };
-            dynamoDBMock.on(UpdateItemCommand).resolves({})
+            dynamoDBMock.on(UpdateCommand).resolves({})
             const awsRequestStub = dynamoDBMock.send;
             const request = new UpdateRequest(documentClient, params, 'dev');
             await request.execute();
@@ -105,19 +122,28 @@ describe('#updateRequest', function () {
                 returnValues: 'ALL_NEW',
                 table: fakeTable
             };
-            const expectedAwsParams = {
+            const expectedAwsParams: UpdateCommandInput = {
                 ConditionExpression: '(attribute_exists(#n0) AND attribute_exists(#n1))',
-                ExpressionAttributeNames: { '#n0': 'id', '#n1': 'type', '#n2': 'value' },
-                ExpressionAttributeValues: { ':v0': 5 },
-                Key: { id: { N: '1' }, type: { S: 'a' } },
-                ReturnValues: 'ALL_NEW',
+                ExpressionAttributeNames: {
+                    '#n0': 'id',
+                    '#n1': 'type',
+                    '#n2': 'value'
+                },
+                ExpressionAttributeValues: {
+                    ':v0': 5
+                },
+                Key: {
+                    'id': 1,
+                    'type': 'a'
+                },
                 ReturnConsumedCapacity: 'TOTAL',
                 ReturnItemCollectionMetrics: 'SIZE',
+                ReturnValues: 'ALL_NEW',
                 TableName: 'dev-fake',
                 UpdateExpression: 'SET #n2 = :v0'
             };
-            const mockReturn: UpdateItemCommandOutput = { $metadata: {}, Attributes: { test: { 'S': 'blop' } } }
-            dynamoDBMock.on(UpdateItemCommand).resolves(mockReturn)
+            const mockReturn: UpdateCommandOutput = { $metadata: {}, Attributes: { test: 'blop' } }
+            dynamoDBMock.on(UpdateCommand).resolves(mockReturn)
             const awsRequestStub = dynamoDBMock.send;
             const request = new UpdateRequest(documentClient, params, 'dev');
             await request.execute();
