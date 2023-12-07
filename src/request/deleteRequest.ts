@@ -11,7 +11,7 @@ import { Table } from '../table';
 import { toModel } from '../model';
 import { ExpressionContext } from '../expression/expression';
 import { pickKeys } from '../util/objectUtils';
-
+import { DynamoDBDocumentClient, DeleteCommand, DeleteCommandInput } from '@aws-sdk/lib-dynamodb';
 export class DeleteRequest {
   private table: Table;
   private returnConsumedCapacity?: ReturnConsumedCapacity;
@@ -21,7 +21,7 @@ export class DeleteRequest {
   private conditionExpression?: string;
   private key: AttributeMap;
 
-  constructor(private documentClient: AWS.DynamoDB.DocumentClient, params: DeleteInput, private stage: string) {
+  constructor(private documentClient: DynamoDBDocumentClient, params: DeleteInput, private stage: string) {
     this.table = params.table;
     this.returnConsumedCapacity = params.returnConsumedCapacity;
     this.returnItemCollectionMetrics = params.returnItemCollectionMetrics;
@@ -46,7 +46,7 @@ export class DeleteRequest {
   }
 
   private sendRequest() {
-    const awsParams: AWS.DynamoDB.DocumentClient.DeleteItemInput = {
+    const awsParams: DeleteCommandInput = {
       ConditionExpression: this.conditionExpression,
       ExpressionAttributeNames: this.attributes.names,
       ExpressionAttributeValues: this.attributes.values,
@@ -56,7 +56,7 @@ export class DeleteRequest {
       ReturnItemCollectionMetrics: this.returnItemCollectionMetrics,
       TableName: this.table.getName(this.stage),
     };
-    return this.documentClient.delete(awsParams).promise();
+    return this.documentClient.send(new DeleteCommand(awsParams));
   }
 
   private buildExpressionContext(attributes: AttributeExpressions, table: Table): ExpressionContext {

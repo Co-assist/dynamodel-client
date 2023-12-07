@@ -36,7 +36,7 @@ interface FakeB {
     type?: 'b';
 };
 
-export  class FakeBModel extends model(new Schemaless<FakeB>({
+export class FakeBModel extends model(new Schemaless<FakeB>({
     type: {
         test: (value) => value === 'b'
     }
