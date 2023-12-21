@@ -1,21 +1,20 @@
 // TODO: Unit tests
-import { BatchGetCommandOutput, BatchWriteCommandOutput, QueryCommandOutput, ScanCommandOutput } from '@aws-sdk/lib-dynamodb';
+import {
+  BatchGetCommandOutput,
+  BatchWriteCommandOutput,
+  QueryCommandOutput,
+  ScanCommandOutput,
+} from '@aws-sdk/lib-dynamodb';
 import { flatArray, isDefine, sum } from './objectUtils';
 import { Capacity, ConsumedCapacity } from '@aws-sdk/client-dynamodb';
 
 /* istanbul ignore next */
-export function mergeItemCollectionMetrics(
-  responses: BatchWriteCommandOutput[],
-  tableName: string,
-) {
+export function mergeItemCollectionMetrics(responses: BatchWriteCommandOutput[], tableName: string) {
   return flatArray(responses.map((response) => response.ItemCollectionMetrics?.[tableName]).filter(isDefine));
 }
 
 /* istanbul ignore next */
-export function mergeBatchDeleteUnprocessedKeys(
-  responses: BatchWriteCommandOutput[],
-  tableName: string,
-) {
+export function mergeBatchDeleteUnprocessedKeys(responses: BatchWriteCommandOutput[], tableName: string) {
   const writeRequestsList = flatArray(
     responses.map((response) => response.UnprocessedItems?.[tableName]).filter(isDefine),
   );
@@ -23,18 +22,12 @@ export function mergeBatchDeleteUnprocessedKeys(
 }
 
 /* istanbul ignore next */
-export function mergeBatchGetUnprocessedKeys(
-  responses: BatchGetCommandOutput[],
-  tableName: string,
-) {
+export function mergeBatchGetUnprocessedKeys(responses: BatchGetCommandOutput[], tableName: string) {
   return flatArray(responses.map((response) => response.UnprocessedKeys?.[tableName]?.Keys).filter(isDefine));
 }
 
 /* istanbul ignore next */
-export function mergeBatchPutUnprocessedItems(
-  responses: BatchWriteCommandOutput[],
-  tableName: string,
-) {
+export function mergeBatchPutUnprocessedItems(responses: BatchWriteCommandOutput[], tableName: string) {
   const writeRequestsList = flatArray(
     responses.map((response) => response.UnprocessedItems?.[tableName]).filter(isDefine),
   );
@@ -42,19 +35,13 @@ export function mergeBatchPutUnprocessedItems(
 }
 
 /* istanbul ignore next */
-export function mergeBatchGetConsumedCapacities(
-  responses: BatchGetCommandOutput[],
-  tableName: string,
-) {
+export function mergeBatchGetConsumedCapacities(responses: BatchGetCommandOutput[], tableName: string) {
   const consumedCapacities = flatArray(responses.map((response) => response.ConsumedCapacity).filter(isDefine));
   return consumedCapacities.length === 0 ? undefined : mergeConsumedCapacities(consumedCapacities, tableName);
 }
 
 /* istanbul ignore next */
-export function mergeBatchWriteConsumedCapacities(
-  responses: BatchWriteCommandOutput[],
-  tableName: string,
-) {
+export function mergeBatchWriteConsumedCapacities(responses: BatchWriteCommandOutput[], tableName: string) {
   const consumedCapacitiesMixed = flatArray(responses.map((response) => response.ConsumedCapacity).filter(isDefine));
   const consumedCapacities = consumedCapacitiesMixed.filter(
     (consumedCapacity) => consumedCapacity.TableName === tableName,
@@ -63,28 +50,19 @@ export function mergeBatchWriteConsumedCapacities(
 }
 
 /* istanbul ignore next */
-export function mergeQueryConsumedCapacities(
-  responses: QueryCommandOutput[],
-  tableName: string,
-) {
+export function mergeQueryConsumedCapacities(responses: QueryCommandOutput[], tableName: string) {
   const consumedCapacities = responses.map((response) => response.ConsumedCapacity).filter(isDefine);
   return consumedCapacities.length === 0 ? undefined : mergeConsumedCapacities(consumedCapacities, tableName);
 }
 
 /* istanbul ignore next */
-export function mergeScanConsumedCapacities(
-  responses: ScanCommandOutput[],
-  tableName: string,
-) {
+export function mergeScanConsumedCapacities(responses: ScanCommandOutput[], tableName: string) {
   const consumedCapacities = responses.map((response) => response.ConsumedCapacity).filter(isDefine);
   return consumedCapacities.length === 0 ? undefined : mergeConsumedCapacities(consumedCapacities, tableName);
 }
 
 /* istanbul ignore next */
-export function mergeConsumedCapacities(
-  consumedCapacities: ConsumedCapacity[],
-  tableName: string,
-) {
+export function mergeConsumedCapacities(consumedCapacities: ConsumedCapacity[], tableName: string) {
   const consumedCapacity: ConsumedCapacity = {
     TableName: tableName,
     CapacityUnits: sum(consumedCapacities.map((consumedCapacity) => consumedCapacity.CapacityUnits).filter(isDefine)),

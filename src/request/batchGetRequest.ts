@@ -6,7 +6,12 @@ import { mergeBatchGetUnprocessedKeys, mergeBatchGetConsumedCapacities } from '.
 import { Table } from '../table';
 import { toModel, Model } from '../model';
 import { ExpressionContext } from '../expression/expression';
-import { BatchGetCommand, BatchGetCommandInput, BatchGetCommandOutput, DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
+import {
+  BatchGetCommand,
+  BatchGetCommandInput,
+  BatchGetCommandOutput,
+  DynamoDBDocumentClient,
+} from '@aws-sdk/lib-dynamodb';
 
 export const BATCH_GET_LIMIT = 25;
 
@@ -60,10 +65,7 @@ export class BatchGetRequest {
     return this.documentClient.send(new BatchGetCommand(awsParams));
   }
 
-  private buildModelsFromResponses(
-    responses: BatchGetCommandOutput[],
-    tableName: string,
-  ): Model[] {
+  private buildModelsFromResponses(responses: BatchGetCommandOutput[], tableName: string): Model[] {
     const items = flatArray(responses.map((response) => response.Responses?.[tableName] ?? []));
     return items.map((item) => toModel(item, this.table));
   }

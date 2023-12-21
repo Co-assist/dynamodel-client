@@ -82,7 +82,7 @@ export class QueryRequest {
       ScanIndexForward: this.scanIndexForward,
       TableName: this.table.getName(this.stage),
     };
-    return this.documentClient.send(new QueryCommand(awsParams))
+    return this.documentClient.send(new QueryCommand(awsParams));
   }
 
   private getLimit(scannedCount: number) {

@@ -12,11 +12,19 @@ import { Projection } from './expression/projectionExpression';
 import { ConditionExpression } from './expression/conditionExpression';
 import { Table } from './table';
 import { Model } from './model';
-import { BatchGetCommandOutput, BatchWriteCommandOutput, DeleteCommandOutput, DynamoDBDocumentClient, GetCommandOutput, PutCommandOutput, UpdateCommandOutput } from '@aws-sdk/lib-dynamodb';
+import {
+  BatchGetCommandOutput,
+  BatchWriteCommandOutput,
+  DeleteCommandOutput,
+  DynamoDBDocumentClient,
+  GetCommandOutput,
+  PutCommandOutput,
+  UpdateCommandOutput,
+} from '@aws-sdk/lib-dynamodb';
 import { ConsumedCapacity, ItemCollectionMetrics } from '@aws-sdk/client-dynamodb';
 
 export class Dynamodel {
-  constructor(private documentClient: DynamoDBDocumentClient, private stage: string) { }
+  constructor(private documentClient: DynamoDBDocumentClient, private stage: string) {}
 
   batchDelete(params: BatchDeleteInput): Promise<BatchDeleteOutput> {
     return new BatchDeleteRequest(this.documentClient, params, this.stage).execute();

@@ -85,7 +85,7 @@ export class UpdateRequest {
       TableName: this.table.getName(this.stage),
       UpdateExpression: this.updateExpression,
     };
-    return this.documentClient.send(new UpdateCommand(awsParams))
+    return this.documentClient.send(new UpdateCommand(awsParams));
   }
 
   private buildExpressionContext(attributes: AttributeExpressions, table: Table): ExpressionContext {

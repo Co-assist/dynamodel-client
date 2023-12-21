@@ -1,11 +1,5 @@
 import { mapToArray, setToArray } from '../util/objectUtils';
-import {
-  Expression,
-  PathExpression,
-  ValueExpression,
-  FunctionExpression,
-  ExpressionContext
-} from './expression';
+import { Expression, PathExpression, ValueExpression, FunctionExpression, ExpressionContext } from './expression';
 
 export type UpdateExpression = BinaryOperationExpression | IfNotExistsExpression | ListAppendExpression;
 
@@ -141,7 +135,7 @@ class BinaryOperationExpression implements Expression {
     private operator: string,
     private operand1: UpdateExpression | PathExpression | ValueExpression,
     private operand2: UpdateExpression | PathExpression | ValueExpression,
-  ) { }
+  ) {}
 
   /** @override */
   serialize(context: ExpressionContext): string {
