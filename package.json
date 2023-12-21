@@ -46,14 +46,14 @@
     "prettier": "^2.8.8",
     "sinon": "^9.2.4",
     "sinon-test": "^3.1.5",
-    "ts-node": "^10.9.1",
+    "ts-node": "^10.9.2",
     "tslint": "^6.1.3",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^4.9.5"
   },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.465.0",
-    "@aws-sdk/lib-dynamodb": "^3.465.0"
+    "@aws-sdk/client-dynamodb": "^3.478.0",
+    "@aws-sdk/lib-dynamodb": "^3.478.0"
   },
   "files": [
     "lib/**/*"
