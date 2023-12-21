@@ -23,7 +23,11 @@ export class BatchGetRequest {
   private projectionExpression?: string;
   private attributes: AttributeExpressions;
 
-  constructor(private documentClient: DynamoDBDocumentClient, params: BatchGetInput, private stage: string) {
+  constructor(
+    private documentClient: DynamoDBDocumentClient,
+    params: BatchGetInput,
+    private stage: string,
+  ) {
     this.table = params.table;
     this.consistentRead = params.consistentRead;
     this.returnConsumedCapacity = params.returnConsumedCapacity;

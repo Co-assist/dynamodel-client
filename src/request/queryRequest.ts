@@ -24,7 +24,11 @@ export class QueryRequest {
   private filterExpression?: string;
   private keyConditionExpression?: string;
 
-  constructor(private documentClient: DynamoDBDocumentClient, params: QueryInput, private stage: string) {
+  constructor(
+    private documentClient: DynamoDBDocumentClient,
+    params: QueryInput,
+    private stage: string,
+  ) {
     this.table = params.table;
     this.consistentRead = params.consistentRead;
     this.countLimit = params.countLimit ?? Number.MAX_SAFE_INTEGER;

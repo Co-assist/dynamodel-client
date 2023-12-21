@@ -21,7 +21,11 @@ export class BatchDeleteRequest {
   private returnItemCollectionMetrics?: ReturnItemCollectionMetrics;
   private keysList: AttributeMap[][];
 
-  constructor(private documentClient: DynamoDBDocumentClient, params: BatchDeleteInput, private stage: string) {
+  constructor(
+    private documentClient: DynamoDBDocumentClient,
+    params: BatchDeleteInput,
+    private stage: string,
+  ) {
     this.table = params.table;
     this.returnConsumedCapacity = params.returnConsumedCapacity;
     this.returnItemCollectionMetrics = params.returnItemCollectionMetrics;

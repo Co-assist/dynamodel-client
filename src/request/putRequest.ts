@@ -23,7 +23,11 @@ export class PutRequest {
   private ModelConstructor: ModelConstructor;
   private item: AttributeMap;
 
-  constructor(private documentClient: DynamoDBDocumentClient, params: PutInput, private stage: string) {
+  constructor(
+    private documentClient: DynamoDBDocumentClient,
+    params: PutInput,
+    private stage: string,
+  ) {
     this.table = params.table;
     this.returnConsumedCapacity = params.returnConsumedCapacity;
     this.returnItemCollectionMetrics = params.returnItemCollectionMetrics;

@@ -24,7 +24,10 @@ import {
 import { ConsumedCapacity, ItemCollectionMetrics } from '@aws-sdk/client-dynamodb';
 
 export class Dynamodel {
-  constructor(private documentClient: DynamoDBDocumentClient, private stage: string) {}
+  constructor(
+    private documentClient: DynamoDBDocumentClient,
+    private stage: string,
+  ) {}
 
   batchDelete(params: BatchDeleteInput): Promise<BatchDeleteOutput> {
     return new BatchDeleteRequest(this.documentClient, params, this.stage).execute();

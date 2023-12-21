@@ -120,7 +120,10 @@ class FunctionNumberExpression extends FunctionExpression {
 }
 
 class LogicalExpression implements Expression {
-  constructor(private operator: string, private conditions: BooleanConditionExpression[]) {
+  constructor(
+    private operator: string,
+    private conditions: BooleanConditionExpression[],
+  ) {
     if (conditions.length === 0) {
       // Prevent "()" serialized expression.
       throw new Error('LogicalExpression must contains at least one condition.');

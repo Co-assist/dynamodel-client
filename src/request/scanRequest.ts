@@ -24,7 +24,11 @@ export class ScanRequest {
   private projectionExpression?: string;
   private filterExpression?: string;
 
-  constructor(private documentClient: DynamoDBDocumentClient, params: ScanInput, private stage: string) {
+  constructor(
+    private documentClient: DynamoDBDocumentClient,
+    params: ScanInput,
+    private stage: string,
+  ) {
     this.table = params.table;
     this.consistentRead = params.consistentRead;
     this.countLimit = params.countLimit ?? Number.MAX_SAFE_INTEGER;

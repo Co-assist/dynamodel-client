@@ -15,7 +15,11 @@ export class GetRequest {
   private projectionExpression?: string;
   private key: AttributeMap;
 
-  constructor(private documentClient: DynamoDBDocumentClient, params: GetInput, private stage: string) {
+  constructor(
+    private documentClient: DynamoDBDocumentClient,
+    params: GetInput,
+    private stage: string,
+  ) {
     this.table = params.table;
     this.consistentRead = params.consistentRead;
     this.returnConsumedCapacity = params.returnConsumedCapacity;

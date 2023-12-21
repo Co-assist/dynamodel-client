@@ -128,7 +128,10 @@ export class ValueExpression<T = any> implements Expression {
 }
 
 export class FunctionExpression implements Expression {
-  constructor(private functionName: string, private params: Expression[]) {}
+  constructor(
+    private functionName: string,
+    private params: Expression[],
+  ) {}
 
   /** @override */
   serialize(context: ExpressionContext): string {

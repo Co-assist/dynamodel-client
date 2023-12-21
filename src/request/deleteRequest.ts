@@ -21,7 +21,11 @@ export class DeleteRequest {
   private conditionExpression?: string;
   private key: AttributeMap;
 
-  constructor(private documentClient: DynamoDBDocumentClient, params: DeleteInput, private stage: string) {
+  constructor(
+    private documentClient: DynamoDBDocumentClient,
+    params: DeleteInput,
+    private stage: string,
+  ) {
     this.table = params.table;
     this.returnConsumedCapacity = params.returnConsumedCapacity;
     this.returnItemCollectionMetrics = params.returnItemCollectionMetrics;

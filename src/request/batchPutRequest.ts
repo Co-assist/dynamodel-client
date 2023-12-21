@@ -23,7 +23,11 @@ export class BatchPutRequest {
   private returnItemCollectionMetrics?: ReturnItemCollectionMetrics;
   private itemsList: AttributeMap[][];
 
-  constructor(private documentClient: DynamoDBDocumentClient, params: BatchPutInput, private stage: string) {
+  constructor(
+    private documentClient: DynamoDBDocumentClient,
+    params: BatchPutInput,
+    private stage: string,
+  ) {
     this.table = params.table;
     this.returnConsumedCapacity = params.returnConsumedCapacity;
     this.returnItemCollectionMetrics = params.returnItemCollectionMetrics;
